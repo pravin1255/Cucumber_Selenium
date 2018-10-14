@@ -6,8 +6,8 @@ import cucumber.api.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		features="Feature",
-		glue={"stepDefinition"}
+		features="Feature/LogIn_Test.feature",
+		glue={"com.policy.stepDefinition"}
 		)
 public class TestRunner {
 
