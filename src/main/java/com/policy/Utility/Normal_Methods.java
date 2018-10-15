@@ -59,8 +59,8 @@ public class Normal_Methods
 			}
 		};
 		wait.until(function);
-		
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).click();
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).click();
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathName))).click();//new condition on 15-10-18
 	}
 	
 	public static void dropDownSelect(String drop, String value) {
