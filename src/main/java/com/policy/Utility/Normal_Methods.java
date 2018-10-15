@@ -48,7 +48,7 @@ public class Normal_Methods
 				WebElement element = input.findElement(By.xpath(xpathName));
 
 				try {
-					if (element.isDisplayed() && element.isDisplayed()) {
+					if (element.isDisplayed() && element.isEnabled()) {
 						highlight(element);
 						return true;
 					}
@@ -59,6 +59,7 @@ public class Normal_Methods
 			}
 		};
 		wait.until(function);
+		
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).click();
 	}
 	
@@ -170,10 +171,10 @@ public class Normal_Methods
 
 		seriesOfAction.perform();	
 			
-		Action series1 = builder.moveToElement(textbox).sendKeys(Keys.ARROW_DOWN).build();
+		/*Action series1 = builder.moveToElement(textbox).sendKeys(Keys.ARROW_DOWN).build();
 
 		series1.perform();
-		
+*/		
 		Action series2 = builder.moveToElement(textbox).sendKeys(Keys.ENTER).build();
 
 		series2.perform();
