@@ -1,0 +1,260 @@
+[
+  {
+    "line": 1,
+    "elements": [
+      {
+        "line": 18,
+        "name": "Successful login to policy bazar site",
+        "description": "",
+        "id": "login-action;successful-login-to-policy-bazar-site;;2",
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "steps": [
+          {
+            "result": {
+              "duration": 4031404101,
+              "status": "passed"
+            },
+            "line": 5,
+            "name": "User opens the browser",
+            "match": {
+              "location": "TestSteps.user_opens_the_browser()"
+            },
+            "keyword": "Given "
+          },
+          {
+            "result": {
+              "duration": 9028532311,
+              "status": "passed"
+            },
+            "line": 6,
+            "name": "opens the policy bazar site",
+            "match": {
+              "location": "TestSteps.opens_the_policy_bazar_site()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 15084580222,
+              "status": "passed"
+            },
+            "line": 7,
+            "name": "user fills all the details \"TC1\"",
+            "match": {
+              "arguments": [
+                {
+                  "val": "TC1",
+                  "offset": 28
+                }
+              ],
+              "location": "TestSteps.user_fills_all_the_details(String)"
+            },
+            "matchedColumns": [
+              0
+            ],
+            "keyword": "When "
+          },
+          {
+            "result": {
+              "duration": 359157688,
+              "status": "passed"
+            },
+            "line": 8,
+            "name": "clicks on proceed button",
+            "match": {
+              "location": "TestSteps.clicks_on_proceed_button()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 2593617125,
+              "status": "passed"
+            },
+            "line": 9,
+            "name": "User enters the next page \"TC1\"",
+            "match": {
+              "arguments": [
+                {
+                  "val": "TC1",
+                  "offset": 27
+                }
+              ],
+              "location": "TestSteps.user_enters_the_next_page(String)"
+            },
+            "matchedColumns": [
+              0
+            ],
+            "keyword": "When "
+          },
+          {
+            "result": {
+              "duration": 296732191,
+              "status": "passed"
+            },
+            "line": 10,
+            "name": "clicks on proceed button",
+            "match": {
+              "location": "TestSteps.clicks_on_proceed_button()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 18773,
+              "status": "passed"
+            },
+            "line": 11,
+            "name": "User searches search text on search bar",
+            "match": {
+              "location": "TestSteps.user_searches_search_text_on_search_bar()"
+            },
+            "keyword": "When "
+          },
+          {
+            "result": {
+              "duration": 10897224377,
+              "status": "passed"
+            },
+            "line": 12,
+            "name": "clicks on search button",
+            "match": {
+              "location": "TestSteps.clicks_on_search_button()"
+            },
+            "keyword": "And "
+          }
+        ]
+      },
+      {
+        "line": 19,
+        "name": "Successful login to policy bazar site",
+        "description": "",
+        "id": "login-action;successful-login-to-policy-bazar-site;;3",
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "steps": [
+          {
+            "result": {
+              "duration": 3732453748,
+              "status": "passed"
+            },
+            "line": 5,
+            "name": "User opens the browser",
+            "match": {
+              "location": "TestSteps.user_opens_the_browser()"
+            },
+            "keyword": "Given "
+          },
+          {
+            "result": {
+              "duration": 8598712195,
+              "status": "passed"
+            },
+            "line": 6,
+            "name": "opens the policy bazar site",
+            "match": {
+              "location": "TestSteps.opens_the_policy_bazar_site()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 21879633114,
+              "status": "passed"
+            },
+            "line": 7,
+            "name": "user fills all the details \"TC2\"",
+            "match": {
+              "arguments": [
+                {
+                  "val": "TC2",
+                  "offset": 28
+                }
+              ],
+              "location": "TestSteps.user_fills_all_the_details(String)"
+            },
+            "matchedColumns": [
+              0
+            ],
+            "keyword": "When "
+          },
+          {
+            "result": {
+              "duration": 1645618248,
+              "status": "passed"
+            },
+            "line": 8,
+            "name": "clicks on proceed button",
+            "match": {
+              "location": "TestSteps.clicks_on_proceed_button()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 1938681664,
+              "status": "passed"
+            },
+            "line": 9,
+            "name": "User enters the next page \"TC2\"",
+            "match": {
+              "arguments": [
+                {
+                  "val": "TC2",
+                  "offset": 27
+                }
+              ],
+              "location": "TestSteps.user_enters_the_next_page(String)"
+            },
+            "matchedColumns": [
+              0
+            ],
+            "keyword": "When "
+          },
+          {
+            "result": {
+              "duration": 247581953,
+              "status": "passed"
+            },
+            "line": 10,
+            "name": "clicks on proceed button",
+            "match": {
+              "location": "TestSteps.clicks_on_proceed_button()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 20052,
+              "status": "passed"
+            },
+            "line": 11,
+            "name": "User searches search text on search bar",
+            "match": {
+              "location": "TestSteps.user_searches_search_text_on_search_bar()"
+            },
+            "keyword": "When "
+          },
+          {
+            "result": {
+              "duration": 9376940090,
+              "status": "passed"
+            },
+            "line": 12,
+            "name": "clicks on search button",
+            "match": {
+              "location": "TestSteps.clicks_on_search_button()"
+            },
+            "keyword": "And "
+          }
+        ]
+      }
+    ],
+    "name": "Login Action",
+    "description": "",
+    "id": "login-action",
+    "keyword": "Feature",
+    "uri": "Feature/LogIn_Test.feature"
+  }
+]

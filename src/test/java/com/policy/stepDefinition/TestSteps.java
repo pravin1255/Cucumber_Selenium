@@ -15,6 +15,7 @@ import com.policy.Utility.Normal_Methods;
 //my new step on 15-10
 public class TestSteps 
 {
+	public String testCaseName="";
 	//String proceed="//span[text()='Proceed']";
 	
 	String proceed="//*[@type='submit']//*[text()='Proceed']";
@@ -81,7 +82,8 @@ public class TestSteps
 	public void clicks_on_proceed_button() throws Throwable {
 	
 	       
-	       Normal_Methods.waitAndDoActionXpath(proceed);
+	      Normal_Methods.waitAndDoActionXpath(proceed);
+		//Normal_Methods.waitUntilElementIsClickable(proceed, 35);
 		
 		//driver.findElement(By.cssSelector("span:contains('Proceed')")).click();
 	}
@@ -170,4 +172,90 @@ public class TestSteps
 	       
 	       System.out.println("Maximum premium is "+Maxpremium); 
 	}
+	
+	@When("^user fills all the details \"(.*?)\"$")
+	public void user_fills_all_the_details(String arg1) throws Throwable {
+	   
+		testCaseName = arg1;
+		Normal_Methods.readDataFromExcel("Data");
+
+		String health = "//span[text()='Health']";
+
+		Normal_Methods.waitAndDoActionXpath(health);
+
+		String country = "//select[@ng-model='setCountryCodeId.CountryCode']";
+
+		Normal_Methods.waitAndDoActionXpath(country);
+
+		String country1 = "//select[@ng-model='setCountryCodeId.CountryCode']//child::option";
+
+		//String value = "Angola";
+
+		Normal_Methods.dropDownSelect(country1, Normal_Methods.accessTestData(testCaseName, "Country"));
+
+		try {
+			List<WebElement> ele = driver
+					.findElements(By.xpath("//*[@role='dialog']//*[@style='display: block;']//span"));
+
+			ele.get(1).click();
+		} catch (Exception e) {
+			System.out.println(" is not present");
+		}
+		String tel = "//input[@type='tel']";
+
+		Normal_Methods.waitAndType(tel, Normal_Methods.accessTestData(testCaseName, "MobileNo"));
+
+		String city = "//input[@type='search']";
+
+		Normal_Methods.waitAndDoActionXpath(city);
+
+		Normal_Methods.enterTextinAutoCompletion(city, Normal_Methods.accessTestData(testCaseName, "City"));
+
+		String selfCheck = "//*[@name='checkboxSelf']";
+
+		Normal_Methods.waitAndDoActionXpath(selfCheck);
+
+		String age = "//*[@name='selectSelf']//child::option";
+
+		Normal_Methods.dropDownSelect(age, Normal_Methods.accessTestData(testCaseName, "Age"));		
+	}
+	
+	@When("^User enters the next page \"(.*?)\"$")
+	public void user_enters_the_next_page(String arg1) throws Throwable {
+	
+		testCaseName = arg1;
+
+		String title = "//select[@name='salutation']//child::option";
+
+		Normal_Methods.waitAndDoActionXpath(title);
+
+		Normal_Methods.dropDownSelect(title, Normal_Methods.accessTestData(testCaseName, "Title"));
+
+		String selfName = "//*[@name='selfName']";
+
+		Normal_Methods.waitAndType(selfName, Normal_Methods.accessTestData(testCaseName, "Name"));
+
+		String email = "//*[@name='email']";
+
+		Normal_Methods.waitAndType(email, Normal_Methods.accessTestData(testCaseName, "Email"));
+
+		WebElement medicalCondition = driver.findElement(By.xpath("//*[@value='1' and @role='radio']"));
+
+		Normal_Methods.highlight(medicalCondition);
+
+		String b1 = medicalCondition.getAttribute("aria-checked");
+
+		System.out.println("b1 " + b1);
+
+		if (!b1.equalsIgnoreCase("false")) {
+			System.out.println("Entered loop");
+			driver.findElement(By.xpath("//*[@class='md-container']")).click();
+		} else {
+			System.out.println("entered in else ");
+		}
+
+		// Normal_Methods.waitAndDoActionXpath(proceed);
+
+	}
+
 }  
