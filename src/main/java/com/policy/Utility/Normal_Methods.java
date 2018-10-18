@@ -36,23 +36,23 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class Normal_Methods 
 {
-	static LinkedHashMap<String, LinkedHashMap<String,String>> outerMap;
-	static LinkedHashMap<String,String> innerMap;
-	static LinkedHashMap<String,String> tempMap;
-	static int rowCount;
-	static int colCount;
+	LinkedHashMap<String, LinkedHashMap<String,String>> outerMap;
+	LinkedHashMap<String,String> innerMap;
+	LinkedHashMap<String,String> tempMap;
+	int rowCount;
+	int colCount;
 	
-	static HSSFSheet sheet;
+	HSSFSheet sheet;
 	
-	public static int count;
+	public int count;
 	
-	public static void highlight(WebElement element)
+	public void highlight(WebElement element)
 	{
 		JavascriptExecutor js=(JavascriptExecutor)driver;
 		js.executeScript("arguments[0].setAttribute('style','border:2px solid red');", element);
 	}
 	
-	public static void waitAndDoActionXpath(String xpathName) {
+	public void waitAndDoActionXpath(String xpathName) {
 		count = 1;
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
 				.withTimeout(30, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
@@ -82,7 +82,7 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathName))).click();//new condition on 15-10-18
 	}
 	
-	public static void dropDownSelect(String drop, String value) {
+	public void dropDownSelect(String drop, String value) {
 		List<WebElement> ele = driver.findElements(By.xpath(drop));
 
 		for (WebElement ele1 : ele) {
@@ -104,7 +104,7 @@ public class Normal_Methods
 		}
 	}
 	
-	public static void waitToVisible(String xpathName) {
+	public void waitToVisible(String xpathName) {
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
@@ -137,7 +137,7 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName)));
 	}
 	
-	public static void waitToVisibleElements(String xpathName) {
+	public void waitToVisibleElements(String xpathName) {
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
@@ -147,7 +147,7 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(xpathName)));
 	}
 	
-	public static void waitAndType(String xpathName,String value) {
+	public void waitAndType(String xpathName,String value) {
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
@@ -181,7 +181,7 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).sendKeys(value);;
 	}
 	
-	public static void enterTextinAutoCompletion(String xpathName, String value)
+	public void enterTextinAutoCompletion(String xpathName, String value)
 	{
 		Actions builder = new Actions(driver);
 
@@ -199,7 +199,7 @@ public class Normal_Methods
 		series2.perform();
 	}
 	
-	public static void waitUntilElementIsClickable(String text,long time)
+	public void waitUntilElementIsClickable(String text,long time)
 	{
 		System.out.println("Before waiting");
 		new WebDriverWait(driver, time).until(ExpectedConditions.elementToBeClickable(By.xpath(text))).click();
@@ -207,14 +207,14 @@ public class Normal_Methods
 	}
 	
 	//Method to get the current time and Date
-	public static String getTimeAndDate()
+	public String getTimeAndDate()
 	{
 		DateFormat date1=new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
 		Date date=new Date();
 		return date1.format(date);
 	}
 	
-	public static void clickElement(String xpathName)
+	public void clickElement(String xpathName)
 	{
 		highlightGreen(xpathName);
 		WebElement element=driver.findElement(By.xpath(xpathName));
@@ -223,49 +223,50 @@ public class Normal_Methods
 		driver.findElement(By.xpath(xpathName)).click();
 	}
 
-	private static void highlightGreen(String xpathName) {
+	private void highlightGreen(String xpathName) {
 		
 		JavascriptExecutor js=(JavascriptExecutor)driver;
 		js.executeScript("arguments[0].setAttribute('style','border:2px solid green');", driver.findElement(By.xpath(xpathName)));		
 	}
 	
-	public static void readDataFromExcel(String sheetName)
+	public void readDataFromExcel(String sheetName)
 	{
 		try
 		{
 			FileInputStream fis=new FileInputStream("TestData.xls");
 			
-			HSSFWorkbook workbook=new HSSFWorkbook(fis);
-			
-			outerMap=new LinkedHashMap<>();
-			
-			sheet=workbook.getSheet(sheetName);
-			
-			System.out.println("The sheet name is "+sheet);
-			
-			rowCount=sheet.getLastRowNum();
-			
-			System.out.println("The rowcount is "+rowCount);
-			
-			colCount=sheet.getRow(0).getLastCellNum();
-			
-			System.out.println("The column count is "+colCount);
-			
-			for(int i=1;i<=sheet.getLastRowNum();i++)
+			try(HSSFWorkbook workbook=new HSSFWorkbook(fis);)
 			{
-				innerMap=new LinkedHashMap<String,String>();
+				outerMap=new LinkedHashMap<>();
 				
-				//here j is starting from 1st column i.e Country column so it should be less than lastCellNum
-				//If we take less than equal to than we will get NullPointerException
-				for(int j=1;j<sheet.getRow(i).getLastCellNum();j++)
+				sheet=workbook.getSheet(sheetName);
+				
+				System.out.println("The sheet name is "+sheet);
+				
+				rowCount=sheet.getLastRowNum();
+				
+				System.out.println("The rowcount is "+rowCount);
+				
+				colCount=sheet.getRow(0).getLastCellNum();
+				
+				System.out.println("The column count is "+colCount);
+				
+				for(int i=1;i<=sheet.getLastRowNum();i++)
 				{
-					System.out.println("value 1 "+sheet.getRow(0).getCell(j).getStringCellValue());
-					System.out.println("value 2 "+sheet.getRow(i).getCell(j).getStringCellValue());
-					innerMap.put(sheet.getRow(0).getCell(j).getStringCellValue(), sheet.getRow(i).getCell(j).getStringCellValue());
+					innerMap=new LinkedHashMap<String,String>();
+					
+					//here j is starting from 1st column i.e Country column so it should be less than lastCellNum
+					//If we take less than equal to than we will get NullPointerException
+					for(int j=1;j<sheet.getRow(i).getLastCellNum();j++)
+					{
+						System.out.println("value 1 "+sheet.getRow(0).getCell(j).getStringCellValue());
+						System.out.println("value 2 "+sheet.getRow(i).getCell(j).getStringCellValue());
+						innerMap.put(sheet.getRow(0).getCell(j).getStringCellValue(), sheet.getRow(i).getCell(j).getStringCellValue());
+					}
+					outerMap.put(sheet.getRow(i).getCell(0).getStringCellValue(), innerMap);
 				}
-				outerMap.put(sheet.getRow(i).getCell(0).getStringCellValue(), innerMap);
-			}
-			System.out.println(outerMap);			
+				System.out.println(outerMap);
+			}				
 		}
 		catch(IOException e)
 		{
@@ -273,7 +274,7 @@ public class Normal_Methods
 		}
 	}
 	
-	public static String accessTestData(String testCaseName, String fieldName)
+	public String accessTestData(String testCaseName, String fieldName)
 	{
 		tempMap=new LinkedHashMap<>();
 		
