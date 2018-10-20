@@ -16,4 +16,15 @@ And clicks on search button
 Examples:
 |Testcase Name|
 |TC1|
-|TC2|
+
+@RegressionTest
+Scenario Outline: Successful login to MDDX site
+
+Given User opens the browser
+And opens the mddx site
+When user fills the login details"<Testcase Name>"
+And clicks on signin button and gets the last login detail
+
+Examples:
+|Testcase Name|
+|TC1|
