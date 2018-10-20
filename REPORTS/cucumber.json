@@ -6,7 +6,7 @@
         "before": [
           {
             "result": {
-              "duration": 1518452,
+              "duration": 20710084,
               "status": "passed"
             },
             "match": {
@@ -14,7 +14,7 @@
             }
           }
         ],
-        "line": 30,
+        "line": 31,
         "name": "Successful login to MDDX site",
         "description": "",
         "id": "login-action;successful-login-to-mddx-site;;2",
@@ -23,7 +23,7 @@
         "steps": [
           {
             "result": {
-              "duration": 7273310738,
+              "duration": 12682183550,
               "status": "passed"
             },
             "line": 23,
@@ -35,7 +35,7 @@
           },
           {
             "result": {
-              "duration": 5051062917,
+              "duration": 8640749302,
               "status": "passed"
             },
             "line": 24,
@@ -47,7 +47,7 @@
           },
           {
             "result": {
-              "duration": 6924472894,
+              "duration": 4518903216,
               "status": "passed"
             },
             "line": 25,
@@ -68,13 +68,25 @@
           },
           {
             "result": {
-              "duration": 34521597946,
+              "duration": 38610985249,
               "status": "passed"
             },
             "line": 26,
             "name": "clicks on signin button and gets the last login detail",
             "match": {
               "location": "TestSteps.clicks_on_signin_button_and_gets_the_last_login_detail()"
+            },
+            "keyword": "And "
+          },
+          {
+            "result": {
+              "duration": 1789084892,
+              "status": "passed"
+            },
+            "line": 27,
+            "name": "User logout from application",
+            "match": {
+              "location": "TestSteps.user_logout_from_application()"
             },
             "keyword": "And "
           }

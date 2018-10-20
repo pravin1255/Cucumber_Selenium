@@ -24,6 +24,7 @@ Given User opens the browser
 And opens the mddx site
 When user fills the login details"<Testcase Name>"
 And clicks on signin button and gets the last login detail
+And User logout from application
 
 Examples:
 |Testcase Name|

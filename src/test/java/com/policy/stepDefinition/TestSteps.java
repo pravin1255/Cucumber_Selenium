@@ -3,6 +3,8 @@ package com.policy.stepDefinition;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
+import com.cucumber.listener.Reporter;
+
 import static com.policy.Utility.Constant.driver;
 
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class TestSteps extends Normal_Methods
 	@Given("^User opens the browser$")
 	public void user_opens_the_browser() throws Throwable {
 		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+"//src//main//java//com/policy//resources//chromedriver.exe");
-	       driver=new ChromeDriver();          
+	    driver=new ChromeDriver();          
 	}
 
 	@Given("^opens the policy bazar site$")
@@ -166,15 +168,23 @@ public class TestSteps extends Normal_Methods
 	@Given("^opens the mddx site$")
 	public void opens_the_mddx_site() throws Throwable {
 		driver.get("http://t.mddximage.com");
-	     driver.manage().window().maximize();
+	    driver.manage().window().maximize();
+	    /*String capture=Normal_Methods.capture(driver, "MDDX Page");
+	    Reporter.addScreenCaptureFromPath(capture, "MDDX Page");*/
 	}
 
 	@When("^clicks on signin button and gets the last login detail$")
 	public void clicks_on_signin_button_and_gets_the_last_login_detail() throws Throwable {
 		waitAndDoActionXpath(UIMapper.getValue("submit"));
 		
+		String capture=Normal_Methods.capture(driver, "MDDX LOGIN page");
+	    Reporter.addScreenCaptureFromPath(capture, "LOGIN Page");
+	    
 		waitUntilElementIsClickable(UIMapper.getValue("notification"), 30);
 		
+		String capture2=Normal_Methods.capture(driver, "Notification Page");
+	    Reporter.addScreenCaptureFromPath(capture2, "Notification Page");
+	    
 		String loginDetails=driver.findElement(By.xpath(UIMapper.getValue("notification"))).getText();
 		
 		System.out.println("Login Details "+loginDetails);
@@ -187,9 +197,18 @@ public class TestSteps extends Normal_Methods
 		
 		waitAndType(UIMapper.getValue("username"), accessTestData(testCaseName, "Username"));
 		
-		waitAndType(UIMapper.getValue("password"), accessTestData(testCaseName, "Password"));
+		waitAndType(UIMapper.getValue("password"), accessTestData(testCaseName, "Password"));	
 		
-		
+		String capture=Normal_Methods.capture(driver, "LOGIN Details page");
+	    Reporter.addScreenCaptureFromPath(capture, "LOGIN Details Page");
 	}
-
+	
+	@When("^User logout from application$")
+	public void user_logout_from_application() throws Throwable {
+	    
+		waitAndDoActionXpath(UIMapper.getValue("logout"));
+		
+		String capture=Normal_Methods.capture(driver, "MDDX LOGOUT page");
+	    Reporter.addScreenCaptureFromPath(capture, "LOGOUT Page");
+	}
 }  

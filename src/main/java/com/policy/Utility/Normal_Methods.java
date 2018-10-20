@@ -3,7 +3,9 @@ package com.policy.Utility;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -14,6 +16,8 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Function;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -30,6 +34,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
@@ -286,4 +292,23 @@ public class Normal_Methods
 		
 		return value;
 	}
+
+	public static String capture(WebDriver driver, String screenShotName)
+	{
+		String dest=null;
+		try
+		{
+			TakesScreenshot ts=(TakesScreenshot)driver;
+			File source=ts.getScreenshotAs(OutputType.FILE);
+			dest=Constant.screehsotPath+"\\"+screenShotName+".png";
+			File destination=new File(dest);
+			FileUtils.copyFile(source, destination);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return dest;
+	}	
+
 }
