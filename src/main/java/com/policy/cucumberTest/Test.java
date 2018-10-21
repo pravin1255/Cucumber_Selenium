@@ -1,41 +1,23 @@
 package com.policy.cucumberTest;
 
-import java.util.Scanner;
+import java.io.File;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 
 public class Test {
-	static boolean checkForPrime(int num) {
-		boolean flag = true;
+	public static void main(String args[]) throws Exception {
 
-		if (num <= 1) {
-			flag = false;
-			return flag;
-		}
-		else
-		{
-			for (int i = 2; i <= (num / 2); i++)
-			{
-				if ((num % i) == 0)
-				{
-					flag = false;
-					break;
-				}
-			}
-		}		
-		return flag;
-	}
-
-	public static void main(String[] args) {
-		try (Scanner sc = new Scanner(System.in);) {
-			System.out.println("Enter a num");
-
-			int num = sc.nextInt();
-
-			boolean isPrime = checkForPrime(num);
-
-			if (isPrime)
-				System.out.println(num + " is Prime");
-			else
-				System.out.println(num + " is not Prime");
-		}
+		ChromeOptions options = new ChromeOptions();
+		options.setExperimentalOption("useAutomationExtension", false);
+		options.addArguments("disable-infobars");
+		System.setProperty("webdriver.chrome.driver",
+				System.getProperty("user.dir") + "//src//main//java//com/policy//resources//chromedriver.exe");
+		ChromeDriverEx driver = new ChromeDriverEx(options);
+		driver.manage().window().maximize();
+		driver.get("https://in.yahoo.com/?p=us");
+		File file = driver.getFullScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(file, new File("F:///FullPageScreenshot3.png"));
 	}
 }

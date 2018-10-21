@@ -12,10 +12,11 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
+import com.policy.cucumberTest.ChromeDriverEx;
 
 //my new step on 15-10
 public class TestSteps extends Normal_Methods 
@@ -33,14 +34,20 @@ public class TestSteps extends Normal_Methods
 	
 	@Given("^User opens the browser$")
 	public void user_opens_the_browser() throws Throwable {
+		ChromeOptions options = new ChromeOptions();
+		options.setExperimentalOption("useAutomationExtension", false);
+		options.addArguments("disable-infobars");
 		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+"//src//main//java//com/policy//resources//chromedriver.exe");
-	    driver=new ChromeDriver();          
+	    driver=new ChromeDriverEx(options);      
 	}
 
 	@Given("^opens the policy bazar site$")
 	public void opens_the_policy_bazar_site() throws Throwable {
 		 driver.get("https://www.policybazaar.com");
 	     driver.manage().window().maximize();
+	     
+	     String capture=Normal_Methods.capture(driver, "Policy bazar page");
+		 Reporter.addScreenCaptureFromPath(capture, "Policy bazar Page");
 	}	
 
 	@When("^clicks on proceed button$")
@@ -81,9 +88,7 @@ public class TestSteps extends Normal_Methods
 			view.click();
 			break;
 		}
-	}
-
-	
+	}	
 	
 	@When("^user fills all the details \"(.*?)\"$")
 	public void user_fills_all_the_details(String arg1) throws Throwable {
@@ -128,6 +133,9 @@ public class TestSteps extends Normal_Methods
 		String age =UIMapper.getValue("age");
 
 		dropDownSelect(age, accessTestData(testCaseName, "Age"));
+		
+		String capture=Normal_Methods.capture(driver, "Policy bazar page fill");
+		Reporter.addScreenCaptureFromPath(capture, "Details filled Page");
 	}
 	
 	@When("^User enters the next page \"(.*?)\"$")
@@ -163,6 +171,9 @@ public class TestSteps extends Normal_Methods
 		} else {
 			System.out.println("entered in else ");
 		}
+		
+		String capture=Normal_Methods.capture(driver, "Policy bazar page fill2");
+		Reporter.addScreenCaptureFromPath(capture, "Details filled Page 2");
 	}
 	
 	@Given("^opens the mddx site$")
@@ -177,12 +188,14 @@ public class TestSteps extends Normal_Methods
 	public void clicks_on_signin_button_and_gets_the_last_login_detail() throws Throwable {
 		waitAndDoActionXpath(UIMapper.getValue("submit"));
 		
-		String capture=Normal_Methods.capture(driver, "MDDX LOGIN page");
+		//String capture=Normal_Methods.capture(driver, "MDDX LOGIN page");
+		String capture=Normal_Methods.captureFullScreen("MDDX LOGIN page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGIN Page");
 	    
 		waitUntilElementIsClickable(UIMapper.getValue("notification"), 30);
 		
-		String capture2=Normal_Methods.capture(driver, "Notification Page");
+		//String capture2=Normal_Methods.capture(driver, "Notification Page");
+		String capture2=Normal_Methods.captureFullScreen("Notification Page");
 	    Reporter.addScreenCaptureFromPath(capture2, "Notification Page");
 	    
 		String loginDetails=driver.findElement(By.xpath(UIMapper.getValue("notification"))).getText();
@@ -199,7 +212,8 @@ public class TestSteps extends Normal_Methods
 		
 		waitAndType(UIMapper.getValue("password"), accessTestData(testCaseName, "Password"));	
 		
-		String capture=Normal_Methods.capture(driver, "LOGIN Details page");
+		//String capture=Normal_Methods.capture(driver, "LOGIN Details page");
+		String capture=Normal_Methods.captureFullScreen("LOGIN Details page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGIN Details Page");
 	}
 	
@@ -208,7 +222,8 @@ public class TestSteps extends Normal_Methods
 	    
 		waitAndDoActionXpath(UIMapper.getValue("logout"));
 		
-		String capture=Normal_Methods.capture(driver, "MDDX LOGOUT page");
+		//String capture=Normal_Methods.capture(driver, "MDDX LOGOUT page");
+		String capture=Normal_Methods.captureFullScreen("MDDX LOGOUT page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGOUT Page");
 	}
 }  

@@ -309,6 +309,22 @@ public class Normal_Methods
 			e.printStackTrace();
 		}
 		return dest;
+	}
+	
+	public static String captureFullScreen(String screenShotName)
+	{
+		String dest=null;
+		try
+		{
+			File source=driver.getFullScreenshotAs(OutputType.FILE);
+			dest=Constant.screehsotPath+"\\"+screenShotName+".png";
+			File destination=new File(dest);
+			FileUtils.copyFile(source, destination);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return dest;
 	}	
-
 }

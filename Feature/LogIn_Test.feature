@@ -1,5 +1,6 @@
 Feature: Login Action
 
+@Policy
 Scenario Outline: Successful login to policy bazar site
 
 Given User opens the browser
@@ -16,6 +17,7 @@ And clicks on search button
 Examples:
 |Testcase Name|
 |TC1|
+|TC2|
 
 @RegressionTest
 Scenario Outline: Successful login to MDDX site
