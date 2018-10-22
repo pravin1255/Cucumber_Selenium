@@ -31,3 +31,31 @@ And User logout from application
 Examples:
 |Testcase Name|
 |TC1|
+
+@flipkartTest
+Scenario Outline: search an item
+
+Given User opens the browser
+And opens flipkart site
+When user login to site "<Testcase Name>"
+And search for iphone "<Testcase Name>"
+And gets the first item amount
+
+Examples:
+|Testcase Name|
+|TC1|
+
+@BackgroundColor
+Scenario Outline: search an item
+
+Given User opens the browser
+And opens flipkart site
+When user login to site "<Testcase Name>"
+And search for product "<Testcase Name>"
+And clicks on first product
+When browser switch to new tab
+And user enters the pin code
+
+Examples:
+|Testcase Name|
+|TC1|

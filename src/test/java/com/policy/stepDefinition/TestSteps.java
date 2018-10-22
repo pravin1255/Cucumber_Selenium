@@ -17,6 +17,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 import com.policy.cucumberTest.ChromeDriverEx;
+import com.relevantcodes.extentreports.ExtentTest;
 
 //my new step on 15-10
 public class TestSteps extends Normal_Methods 
@@ -225,5 +226,116 @@ public class TestSteps extends Normal_Methods
 		//String capture=Normal_Methods.capture(driver, "MDDX LOGOUT page");
 		String capture=Normal_Methods.captureFullScreen("MDDX LOGOUT page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGOUT Page");
+	}
+	
+	@Given("^opens flipkart site$")
+	public void opens_flipkart_site() throws Throwable {
+	    
+		driver.get("https://www.flipkart.com/");
+	    driver.manage().window().maximize();	    
+	}
+
+	@When("^user login to site \"(.*?)\"$")
+	public void user_login_to_site(String arg1) throws Throwable {
+	    
+		testCaseName = arg1;
+		readDataFromExcel("Flipkart");
+		
+		waitAndType(UIMapper.getValue("usernameFlip"), accessTestData(testCaseName, "Username"));
+		Reporter.addStepLog("Username is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(testCaseName, "Username")+"</font>");
+	
+		waitAndType(UIMapper.getValue("passFlip"), accessTestData(testCaseName, "Password"));
+		Reporter.addStepLog("Password is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(testCaseName, "Password")+"</font>");
+		
+		String capture=Normal_Methods.capture(driver, "sign in 2");
+	    Reporter.addScreenCaptureFromPath(capture, "Sign in 2 Page");
+	    
+	    Reporter.addStepLog("Password is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"Logged in FlipKART"+"</font>");
+	    
+	    waitAndDoActionXpath(UIMapper.getValue("submitFlip"));
+	}
+
+	@When("^search for iphone \"(.*?)\"$")
+	public void search_for_iphone(String arg1) throws Throwable {
+	    waitAndType(UIMapper.getValue("searchBox"), "Iphone");
+	    
+	    waitAndDoActionXpath(UIMapper.getValue("searchIcon"));	    
+	}
+
+
+
+	@When("^gets the first item amount$")
+	public void gets_the_first_item_amount() throws Throwable {
+	    
+		Thread.sleep(3000);
+		List<WebElement> ele=driver.findElements(By.xpath(UIMapper.getValue("result")));
+		for(WebElement e:ele)
+		{
+			System.out.println("The amount of first item "+e.getText());
+			Reporter.addStepLog("The amount of first item "+e.getText());
+			
+			String capture=Normal_Methods.capture(driver, "image screen");
+		    Reporter.addScreenCaptureFromPath(capture, "image screen");
+		    e.click();
+		    
+			break;
+		}
+	}
+	
+	@When("^search for product \"(.*?)\"$")
+	public void search_for_product(String arg1) throws Throwable {
+	    testCaseName=arg1;
+	    
+	    readDataFromExcel("Flipkart");
+	    
+	    waitAndType(UIMapper.getValue("searchBox"), accessTestData(testCaseName, "Product"));
+	    
+	    Reporter.addStepLog("Searched item is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(testCaseName, "Product")+"</font>");
+	    waitAndDoActionXpath(UIMapper.getValue("searchIcon"));
+	    
+		String capture=Normal_Methods.capture(driver, "Product");
+	    Reporter.addScreenCaptureFromPath(capture, "Product");
+	}
+
+	@When("^clicks on first product$")
+	public void clicks_on_first_product() throws Throwable {
+		
+		Thread.sleep(3000);
+	    List<WebElement> ele=driver.findElements(By.xpath(UIMapper.getValue("product")));
+	    
+	    for(WebElement e:ele)
+	    {
+	    	if(e.getAttribute("text").equals("Samsung Galaxy On8 (Blue, 64 GB)"))
+	    	{
+	    		e.click();
+	    		Reporter.addStepLog("Product is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"Samsung Galaxy On8 (Blue, 64 GB)"+"</font>");
+	    		break;
+	    	}
+	    }
+	    
+		String capture=Normal_Methods.capture(driver, "First product");
+	    Reporter.addScreenCaptureFromPath(capture, "First product");
+	}
+
+	@When("^browser switch to new tab$")
+	public void browser_switch_to_new_tab() throws Throwable {
+	  
+		switchToNewTab();	    
+		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"Switched to new tab"+"</font>");
+		String capture=Normal_Methods.capture(driver, "New Tab");
+	    Reporter.addScreenCaptureFromPath(capture, "New Tab");
+	}
+
+	@When("^user enters the pin code$")
+	public void user_enters_the_pin_code() throws Throwable {
+		Thread.sleep(3000);
+	    waitAndType(UIMapper.getValue("pincode"), accessTestData(testCaseName, "PinCode"));
+		Reporter.addStepLog("Entering Pincode <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(testCaseName, "PinCode")+"</font>");
+	    waitAndDoActionXpath(UIMapper.getValue("check"));
+	    waitToVisible(UIMapper.getValue("buyNow"));
+	    getBackgroundColor(UIMapper.getValue("buyNow"));
+	    
+	    String capture=Normal_Methods.capture(driver, "Color");
+	    Reporter.addScreenCaptureFromPath(capture, "Color");
 	}
 }  

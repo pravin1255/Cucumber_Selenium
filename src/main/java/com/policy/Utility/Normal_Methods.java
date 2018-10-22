@@ -11,10 +11,12 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.cucumber.listener.Reporter;
 import com.google.common.base.Function;
 
 import java.io.File;
@@ -30,6 +32,7 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -326,5 +329,21 @@ public class Normal_Methods
 			e.printStackTrace();
 		}
 		return dest;
-	}	
+	}
+	
+	public void switchToNewTab()
+	{
+		ArrayList<String> tab = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tab.get(1));
+	}
+	
+	public void getBackgroundColor(String xpathName)
+	{
+		String backgroundColor=driver.findElement(By.xpath(xpathName)).getCssValue("background-color");
+		Reporter.addStepLog("Background Color <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+backgroundColor+"</font>");
+	    System.out.println("background color is "+backgroundColor);
+	    String hex=Color.fromString(backgroundColor).asHex();
+	    Reporter.addStepLog("Background Color in HEX <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+hex+"</font>");
+	    System.out.println("Colors in hex "+hex);	   
+	}
 }

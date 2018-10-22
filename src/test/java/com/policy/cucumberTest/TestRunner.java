@@ -7,7 +7,10 @@ import org.junit.AfterClass;
 
 import org.junit.runner.RunWith;
 import com.cucumber.listener.Reporter;
+import com.policy.Utility.Report;
 import com.policy.Utility.UIMapper;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
 
 import cucumber.api.junit.Cucumber;
 
@@ -21,7 +24,7 @@ import cucumber.api.CucumberOptions;
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html", "pretty"},		
 		monochrome=true,
-		tags={"~@Policy,@RegressionTest"}
+		tags={"~@Policy","~@RegressionTest","~@flipkartTest","@BackgroundColor"}
 		)
 public class TestRunner {
 
@@ -35,7 +38,6 @@ public class TestRunner {
 		Reporter.setSystemInfo("Machine", "Windows 10" + "32 Bit");
 		Reporter.setSystemInfo("Selenium", "3.7.0");
 		Reporter.setSystemInfo("Maven", "3.5.2");	
-		Reporter.setSystemInfo("Java Version", "1.8.0_151");	
-		
+		Reporter.setSystemInfo("Java Version", "1.8.0_151");		
 	}
 }
