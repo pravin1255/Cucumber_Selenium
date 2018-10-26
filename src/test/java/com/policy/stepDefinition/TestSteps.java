@@ -1,5 +1,6 @@
 package com.policy.stepDefinition;
 
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
@@ -7,6 +8,7 @@ import com.cucumber.listener.Reporter;
 
 import static com.policy.Utility.Constant.driver;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
+import com.policy.Utility.WriteLog;
 import com.policy.cucumberTest.ChromeDriverEx;
 import com.relevantcodes.extentreports.ExtentTest;
 
@@ -28,6 +31,21 @@ public class TestSteps extends Normal_Methods
 		String fileName=System.getProperty("user.dir")+"//element.properties";
 		UIMapper ui=new UIMapper(fileName);
 	}
+	
+	@After
+	public void last() throws IOException
+	{
+		//WriteLog.createReportingFolder("target/cucumber-reports/report.html");
+		Reporter.loadXMLConfig(new File(System.getProperty("user.dir")
+				+ UIMapper.getValue("reportConfigPath")));
+		Reporter.setSystemInfo("User Name", System.getProperty("user.name"));
+		Reporter.setSystemInfo("Time Zone", System.getProperty("user.timezone"));
+		Reporter.setSystemInfo("Machine", "Windows 10" + "32 Bit");
+		Reporter.setSystemInfo("Selenium", "3.7.0");
+		Reporter.setSystemInfo("Maven", "3.5.2");	
+		Reporter.setSystemInfo("Java Version", "1.8.0_151");
+	}
+	
 	
 	public String testCaseName="";
 	String health;	
