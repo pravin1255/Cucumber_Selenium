@@ -18,9 +18,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
-import com.policy.Utility.WriteLog;
 import com.policy.cucumberTest.ChromeDriverEx;
-import com.relevantcodes.extentreports.ExtentTest;
 
 //my new step on 15-10
 public class TestSteps extends Normal_Methods 
