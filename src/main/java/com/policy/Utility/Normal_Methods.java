@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.junit.Assert;
 
 
 public class Normal_Methods 
@@ -188,6 +189,11 @@ public class Normal_Methods
 		wait.until(function);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).clear();
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).sendKeys(value);;
+	}
+	
+	public void waitAndType2(String xpathName,String value) {
+		
+		
 	}
 	
 	public void enterTextinAutoCompletion(String xpathName, String value)
@@ -345,5 +351,22 @@ public class Normal_Methods
 	    String hex=Color.fromString(backgroundColor).asHex();
 	    Reporter.addStepLog("Background Color in HEX <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+hex+"</font>");
 	    System.out.println("Colors in hex "+hex);	   
+	}
+	
+	public void switchToFrame(String csstext)
+	{
+		WebElement element=driver.findElement(By.cssSelector("[id*='"+csstext+"']"));
+		driver.switchTo().frame(element);
+	}
+	
+	public boolean verifyCondition(String xpath,String text)
+	{
+		String element=driver.findElement(By.xpath(xpath)).getText().toString();
+		
+		System.out.println("ELEMENT "+element);
+		
+		boolean flag=element.contains(text);
+		
+		return flag;
 	}
 }

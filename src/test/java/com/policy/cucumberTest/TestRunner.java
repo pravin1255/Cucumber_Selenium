@@ -21,7 +21,7 @@ import cucumber.api.CucumberOptions;
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
-		tags={"~@Policy","~@RegressionTest","~@flipkartTest","@BackgroundColor"}
+		tags={"~@Policy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","@Gmailapproval"}
 		)
 public class TestRunner {
 	

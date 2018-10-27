@@ -12,9 +12,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
@@ -23,6 +27,7 @@ import com.policy.cucumberTest.ChromeDriverEx;
 //my new step on 15-10
 public class TestSteps extends Normal_Methods 
 {
+	String capture="";
 	@Before
 	public void loadProperties() throws IOException
 	{
@@ -354,4 +359,156 @@ public class TestSteps extends Normal_Methods
 	    String capture=Normal_Methods.capture(driver, "Color");
 	    Reporter.addScreenCaptureFromPath(capture, "Color");
 	}
+	
+	//Gmail workflow code
+	@Given("^go to gmail login page$")
+	public void go_to_gmail_login_page() throws Throwable {
+		driver.get("https://www.gmail.com/");
+	    driver.manage().window().maximize();
+	}
+	
+	@Given("^Read the Workflow Levels\"(.*?)\"$")
+	public void read_the_Workflow_Levels(String arg1) throws Throwable {
+	    testCaseName=arg1;
+	    
+	    readDataFromExcel("Workflow Name");
+	    
+	    String stages=accessTestData(testCaseName, "WorkFlow");
+	    
+	    String[] stage=stages.split("[$]");
+	    
+	    String Requester=stage[0];
+	    String Approver_1=stage[1];
+	    String Approver_2=stage[2];
+	    
+	    System.out.println("Stage 0 "+Requester+" "+"Stage 1 "+Approver_1+" "+" Stage 2"+Approver_2);	    
+	}
+
+	
+	@When("^User Enters Username and password \"(.*?)\"$")
+	public void user_Enters_Username_and_password(String arg1) throws Throwable {
+		
+	    readDataFromExcel("Users");
+		
+	
+		
+		String requester_id=accessTestData("Requester", "Username");
+		
+		System.out.println("Requester email id "+requester_id);
+		
+		String requester_pass=accessTestData("Requester", "Password");
+		
+		System.out.println("Requester pass id "+requester_pass);
+		
+		waitAndType(UIMapper.getValue("Username"), requester_id);
+		Reporter.addStepLog("Entering username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData("Requester", "Username")+"</font>");
+		capture=Normal_Methods.capture(driver, "Username");
+	    Reporter.addScreenCaptureFromPath(capture, "Username");
+		
+		waitAndDoActionXpath(UIMapper.getValue("next"));
+		
+		waitAndType(UIMapper.getValue("Password"), requester_pass);
+		Reporter.addStepLog("Entering password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData("Requester", "Password")+"</font>");
+		capture=Normal_Methods.capture(driver, "Password");
+	    Reporter.addScreenCaptureFromPath(capture, "Password");		
+	}
+	@When("^User Enters Username and password of \"(.*?)\"$")
+	public void user_Enters_Username_and_password_of(String arg1) throws Throwable {
+		
+		String users=arg1;
+		
+		System.out.println("arg1 "+users);
+		
+		readDataFromExcel("Users");
+			
+		String requester_id=accessTestData(users, "Username");
+		
+		System.out.println("Requester email id "+requester_id);
+		
+		String requester_pass=accessTestData(users, "Password");
+		
+		System.out.println("Requester pass id "+requester_pass);
+		
+		waitAndType(UIMapper.getValue("Username"), requester_id);
+		Reporter.addStepLog("Entering username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Username")+"</font>");
+		capture=Normal_Methods.capture(driver, "Username");
+	    Reporter.addScreenCaptureFromPath(capture, "Username");
+		
+		waitAndDoActionXpath(UIMapper.getValue("next"));
+		
+		waitAndType(UIMapper.getValue("Password"), requester_pass);
+		Reporter.addStepLog("Entering password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Password")+"</font>");
+		capture=Normal_Methods.capture(driver, "Password");
+	    Reporter.addScreenCaptureFromPath(capture, "Password");
+		
+	}
+
+	
+
+
+	@When("^clicks on sign in button$")
+	public void clicks_on_sign_in_button() throws Throwable {
+		waitAndDoActionXpath(UIMapper.getValue("next"));
+	}
+
+	@When("^users clicks on Compose button$")
+	public void users_clicks_on_Compose_button() throws Throwable {
+	    waitAndDoActionXpath(UIMapper.getValue("compose"));
+
+	}
+	
+	@When("^composes mail \"(.*?)\" and sends to \"(.*?)\"$")
+	public void composes_mail_and_sends_to(String arg1, String arg2) throws Throwable {
+	    
+		String composeMail=arg1;
+		
+		readDataFromExcel("Gmail");
+		
+		waitAndType(UIMapper.getValue("subject"), accessTestData(composeMail, "Subject Line"));
+		
+		waitAndType(UIMapper.getValue("body"), accessTestData(composeMail, "Email Body"));
+		
+		readDataFromExcel("Users");
+		
+		waitAndDoActionXpath(UIMapper.getValue("recipients"));
+		
+		waitAndType(UIMapper.getValue("to"), accessTestData(arg2, "Username"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("sendButton"));
+		
+		waitToVisible(UIMapper.getValue("msgSent"));
+		System.out.println(" String IS"+driver.findElement(By.xpath(UIMapper.getValue("msgSent"))).getText());
+		new WebDriverWait(driver, 20).until(ExpectedConditions.textToBePresentInElementLocated(By.xpath(UIMapper.getValue("msgSent")), "Message sent."));
+		
+		waitToVisible(UIMapper.getValue("msgSent"));
+		
+		boolean condition=verifyCondition(UIMapper.getValue("msgSent"),"Message sent.");
+		
+		System.out.println("CONDITION "+condition);
+		
+		if(condition)
+		{
+			Reporter.addStepLog("Message sent<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"</font>");
+
+			String capture=Normal_Methods.capture(driver, "Product");
+			Reporter.addScreenCaptureFromPath(capture, "Product");
+		}		
+	}
+
+	@When("^Logout from Gmail Account$")
+	public void logout_from_Gmail_Account() throws Throwable {
+	    
+	}
+
+	@When("^\"(.*?)\" logins in$")
+	public void logins_in(String arg1) throws Throwable {
+	    
+	}
+
+	@When("^\"(.*?)\" opens the mail received by \"(.*?)\"$")
+	public void opens_the_mail_received_by(String arg1, String arg2) throws Throwable {
+	    
+	}
+
+
 }  
