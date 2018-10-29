@@ -365,6 +365,8 @@ public class TestSteps extends Normal_Methods
 	public void go_to_gmail_login_page() throws Throwable {
 		driver.get("https://www.gmail.com/");
 	    driver.manage().window().maximize();
+	    String capture=Normal_Methods.capture(driver, "Gmail Login Page");
+	    Reporter.addScreenCaptureFromPath(capture, "Gmail Login Page");
 	}
 	
 	@Given("^Read the Workflow Levels\"(.*?)\"$")
@@ -385,12 +387,11 @@ public class TestSteps extends Normal_Methods
 	}
 
 	
-	@When("^User Enters Username and password \"(.*?)\"$")
+	/*@When("^User Enters Username and password \"(.*?)\"$")
 	public void user_Enters_Username_and_password(String arg1) throws Throwable {
 		
 	    readDataFromExcel("Users");
 		
-	
 		
 		String requester_id=accessTestData("Requester", "Username");
 		
@@ -411,7 +412,7 @@ public class TestSteps extends Normal_Methods
 		Reporter.addStepLog("Entering password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData("Requester", "Password")+"</font>");
 		capture=Normal_Methods.capture(driver, "Password");
 	    Reporter.addScreenCaptureFromPath(capture, "Password");		
-	}
+	}*/
 	@When("^User Enters Username and password of \"(.*?)\"$")
 	public void user_Enters_Username_and_password_of(String arg1) throws Throwable {
 		
@@ -423,23 +424,23 @@ public class TestSteps extends Normal_Methods
 			
 		String requester_id=accessTestData(users, "Username");
 		
-		System.out.println("Requester email id "+requester_id);
+		System.out.println(arg1+" email id "+requester_id);
 		
 		String requester_pass=accessTestData(users, "Password");
 		
-		System.out.println("Requester pass id "+requester_pass);
+		System.out.println(arg1+" password "+requester_pass);
 		
 		waitAndType(UIMapper.getValue("Username"), requester_id);
-		Reporter.addStepLog("Entering username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Username")+"</font>");
-		capture=Normal_Methods.capture(driver, "Username");
-	    Reporter.addScreenCaptureFromPath(capture, "Username");
+		Reporter.addStepLog(arg1+" username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Username")+"</font>");
+		capture=Normal_Methods.capture(driver, arg1+" Username");
+	    Reporter.addScreenCaptureFromPath(capture, arg1+" Username");
 		
 		waitAndDoActionXpath(UIMapper.getValue("next"));
 		
 		waitAndType(UIMapper.getValue("Password"), requester_pass);
-		Reporter.addStepLog("Entering password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Password")+"</font>");
-		capture=Normal_Methods.capture(driver, "Password");
-	    Reporter.addScreenCaptureFromPath(capture, "Password");
+		Reporter.addStepLog(arg1+" password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Password")+"</font>");
+		capture=Normal_Methods.capture(driver, arg1+" Password");
+	    Reporter.addScreenCaptureFromPath(capture, arg1+" Password");
 		
 	}
 
@@ -449,11 +450,15 @@ public class TestSteps extends Normal_Methods
 	@When("^clicks on sign in button$")
 	public void clicks_on_sign_in_button() throws Throwable {
 		waitAndDoActionXpath(UIMapper.getValue("next"));
+		String capture=Normal_Methods.capture(driver, "Sign IN");
+		Reporter.addScreenCaptureFromPath(capture, "Sign IN BUTTON");
 	}
 
 	@When("^users clicks on Compose button$")
 	public void users_clicks_on_Compose_button() throws Throwable {
 	    waitAndDoActionXpath(UIMapper.getValue("compose"));
+	    String capture=Normal_Methods.capture(driver, "Compose Button");
+	    Reporter.addScreenCaptureFromPath(capture, "Compose Button");
 
 	}
 	
@@ -474,11 +479,15 @@ public class TestSteps extends Normal_Methods
 		
 		waitAndType(UIMapper.getValue("to"), accessTestData(arg2, "Username"));
 		
+		capture=Normal_Methods.capture(driver, arg2+"");
+		Reporter.addScreenCaptureFromPath(capture, arg2+"");
+		
 		waitAndDoActionXpath(UIMapper.getValue("sendButton"));
 		
 		waitToVisible(UIMapper.getValue("msgSent"));
 		System.out.println(" String IS"+driver.findElement(By.xpath(UIMapper.getValue("msgSent"))).getText());
-		new WebDriverWait(driver, 20).until(ExpectedConditions.textToBePresentInElementLocated(By.xpath(UIMapper.getValue("msgSent")), "Message sent."));
+		
+		waitUntilTextIsVisible(UIMapper.getValue("msgSent"), "Message sent.");
 		
 		waitToVisible(UIMapper.getValue("msgSent"));
 		
@@ -490,7 +499,7 @@ public class TestSteps extends Normal_Methods
 		{
 			Reporter.addStepLog("Message sent<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"</font>");
 
-			String capture=Normal_Methods.capture(driver, "Product");
+			capture=Normal_Methods.capture(driver, "Product");
 			Reporter.addScreenCaptureFromPath(capture, "Product");
 		}		
 	}
@@ -498,17 +507,94 @@ public class TestSteps extends Normal_Methods
 	@When("^Logout from Gmail Account$")
 	public void logout_from_Gmail_Account() throws Throwable {
 	    
+		waitAndDoActionCss(UIMapper.getValue("signOut"));
+		
+		waitAndDoActionCss(UIMapper.getValue("logOut"));
+		
+		Reporter.addStepLog("Clicked on Sign out<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"</font>");
+
+		String capture=Normal_Methods.capture(driver, "Sign out");
+		Reporter.addScreenCaptureFromPath(capture, "Sign Out");
+
 	}
 
 	@When("^\"(.*?)\" logins in$")
 	public void logins_in(String arg1) throws Throwable {
-	    
+	 
+		try
+		{
+			boolean flag=driver.findElement(By.id(UIMapper.getValue("profileIden"))).getText().contains(accessTestData(arg1, "Username"));
+			
+			System.out.println("Flag is "+flag);
+			if(!driver.findElement(By.id(UIMapper.getValue("profileIden"))).getText().contains(accessTestData(arg1, "Username")))
+			{
+				waitAndDoActionXpath(UIMapper.getValue("fill"));
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("EXCEPTION");			
+		}
+		
+		waitAndDoActionXpath(UIMapper.getValue("useAnother"));
 	}
 
-	@When("^\"(.*?)\" opens the mail received by \"(.*?)\"$")
-	public void opens_the_mail_received_by(String arg1, String arg2) throws Throwable {
-	    
+	@When("^\"(.*?)\" opens the mail received by of subjectLines \"(.*?)\"$")
+	public void opens_the_mail_received_by_of_subjectLines(String arg1, String arg2) throws Throwable {
+		Thread.sleep(3000);
+		List<WebElement> ele=driver.findElements(By.xpath(UIMapper.getValue("mailBody")));
+		Reporter.addStepLog("Checking mail body <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"</font>");
+		capture=Normal_Methods.capture(driver, "Mail Body");
+		Reporter.addScreenCaptureFromPath(capture, "Mail Body");
+		
+		System.out.println("SIZE IS "+ele.size());
+		readDataFromExcel("Gmail");
+		
+		for(WebElement e:ele)
+		{
+			if(e.findElement(By.cssSelector("td:nth-child(6)")).getText().contains(accessTestData(arg2, "Subject Line")))
+			{
+				e.findElement(By.cssSelector("td:nth-child(6)")).click();			
+				break;	
+			}
+			else
+			{
+				refreshPage();
+				waitToVisibleElements(UIMapper.getValue("compose"));
+			}
+		}
 	}
 
+	@When("^\"(.*?)\" confirms the Subject line and mail body \"(.*?)\"$")
+	public void confirms_the_Subject_line_and_mail_body(String arg1, String arg2) throws Throwable {
+	
+		waitToVisibleCss(UIMapper.getValue("approverSubjectLine"));
+		
+		waitToVisibleCss(UIMapper.getValue("approverMailBody"));
+		
+		String subjectLine=driver.findElement(By.cssSelector(UIMapper.getValue("approverSubjectLine"))).getText();
+		
+		String mailBody=driver.findElement(By.cssSelector(UIMapper.getValue("approverMailBody"))).getText();
+		
+		if(subjectLine.contains(accessTestData(arg2, "Subject Line")) && mailBody.contains(accessTestData(arg2, "Email Body")))
+		{
+			System.out.println("Approved by "+arg1);
+			Reporter.addStepLog("Approved by <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+arg1+"</font>");
 
+			String capture=Normal_Methods.capture(driver, arg1+"approval");
+			Reporter.addScreenCaptureFromPath(capture, arg1+"approval");
+		}
+	}
+
+	@When("^send to \"(.*?)\"$")
+	public void send_to(String arg1) throws Throwable {
+	
+		waitAndDoActionXpath(UIMapper.getValue("forward"));
+		readDataFromExcel("Users");
+		waitAndType(UIMapper.getValue("to"), accessTestData(arg1, "Username"));
+		
+		capture=Normal_Methods.capture(driver, arg1+"");
+		Reporter.addScreenCaptureFromPath(capture, arg1+"");
+		waitAndDoActionXpath(UIMapper.getValue("sendButton"));		
+	}
 }  

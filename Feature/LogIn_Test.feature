@@ -65,19 +65,19 @@ Feature: Login Action
     And clicks on sign in button
     When users clicks on Compose button
     And composes mail "<Testcase Name>" and sends to "Approver 1"
-   # And Logout from Gmail Account
-    #When "Approver_1" logins in
-    #When User Enters Username and password of "Approver 1"
-    #And clicks on sign in button
-    #When "Approver 1" opens the mail received by "Requester"
-    #And confirms the Subject line and mail body
-    #And clicks on Approved button
-    #And send to Approver2
-    #When Approver 1 logins in
-    #When User Enters Username and password "<Testcase Name>"
-    #And clicks on sign in button
-    #When Approver 2 opens the mail received by Approver1
-    #And confirms the Subject line and mail body
+   	And Logout from Gmail Account
+    When "Approver 1" logins in
+    When User Enters Username and password of "Approver 1"
+    And clicks on sign in button
+    When "Approver 1" opens the mail received by of subjectLines "<Testcase Name>"
+    And "Approver 1" confirms the Subject line and mail body "<Testcase Name>"
+    And send to "Approver 2"
+    And Logout from Gmail Account
+    When "Approver 2" logins in
+    When User Enters Username and password of "Approver 2"
+    And clicks on sign in button
+    When "Approver 2" opens the mail received by of subjectLines "<Testcase Name>"
+    And "Approver 2" confirms the Subject line and mail body "<Testcase Name>"
     #And clicks on reply button
     #And sends response to Requester
     #When Requester logins in

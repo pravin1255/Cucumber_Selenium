@@ -369,4 +369,99 @@ public class Normal_Methods
 		
 		return flag;
 	}
+	
+	public static void waitUntilTextIsVisible(String xpath,String text)
+	{
+		System.out.println("Waiting for text "+text);
+		new WebDriverWait(driver, 30).until(ExpectedConditions.textToBePresentInElementLocated(By.xpath(xpath), text));		
+	}
+	
+	public void waitAndDoActionCss(String cssName)
+	{
+		count=1;
+		
+		FluentWait<WebDriver> wait=new FluentWait<WebDriver>(driver).
+								   pollingEvery(1, TimeUnit.SECONDS).
+								   withTimeout(30, TimeUnit.SECONDS).
+								   ignoring(NoSuchElementException.class).
+								   ignoring(StaleElementReferenceException.class).
+								   ignoring(WebDriverException.class).
+								   ignoring(Exception.class);
+		
+		Function<WebDriver, Boolean> function=new Function<WebDriver, Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver input) {
+				System.out.println("Before waiting and clicking "+cssName+" "+count);
+				count++;
+				WebElement element=driver.findElement(By.cssSelector(cssName));
+				
+				try
+				{
+					if(element.isDisplayed() && element.isEnabled())
+					{
+						highlight(element);
+						return true;
+					}
+				}
+				catch(Exception e)
+				{
+					throw new RuntimeException("ELEMENT NOT PRESENT "+element);
+				}
+				return false;
+			}
+		};
+		wait.until(function);
+		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssName))).click();
+	}
+	
+	public void waitToVisibleCss(String cssName)
+	{
+		count=1;
+		
+		FluentWait<WebDriver> wait=new FluentWait<WebDriver>(driver).
+								   pollingEvery(1, TimeUnit.SECONDS).
+								   withTimeout(30, TimeUnit.SECONDS).
+								   ignoring(NoSuchElementException.class).
+								   ignoring(StaleElementReferenceException.class).
+								   ignoring(WebDriverException.class).
+								   ignoring(Exception.class);
+		
+		Function<WebDriver, Boolean> function=new Function<WebDriver, Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver input) {
+				System.out.println("Before waiting and clicking "+cssName+" "+count);
+				count++;
+				WebElement element=driver.findElement(By.cssSelector(cssName));
+				
+				try
+				{
+					if(element.isDisplayed() && element.isEnabled())
+					{
+						highlight(element);
+						return true;
+					}
+				}
+				catch(Exception e)
+				{
+					throw new RuntimeException("ELEMENT NOT PRESENT "+element);
+				}
+				return false;
+			}
+		};
+		wait.until(function);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName)));
+	}
+	
+	public void scrollIntoView(String xpathName)
+	{
+		JavascriptExecutor js=(JavascriptExecutor)driver;
+		js.executeScript("arguments[0].scrollIntoView()", driver.findElement(By.xpath(xpathName)));
+	}
+	
+	public void refreshPage()
+	{
+		driver.navigate().refresh();
+	}
 }
