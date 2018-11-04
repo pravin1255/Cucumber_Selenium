@@ -1,52 +1,47 @@
 package com.policy.stepDefinition;
 
+import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
-import com.cucumber.listener.Reporter;
+//import com.cucumber.listener.Reporter;
 
 import static com.policy.Utility.Constant.driver;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 import com.policy.cucumberTest.ChromeDriverEx;
+import com.cucumber.listener.Reporter;
 
 //my new step on 15-10
 public class TestSteps extends Normal_Methods 
 {
 	String capture="";
 	@Before
-	public void loadProperties() throws IOException
+	public void loadProperties(Scenario scenario) throws IOException
 	{
+		System.out.println("Executing Scenario :"+scenario.getName());
 		String fileName=System.getProperty("user.dir")+"//element.properties";
 		UIMapper ui=new UIMapper(fileName);
 	}
 	
 	@After
-	public void last() throws IOException
+	public void last(Scenario scenario) throws IOException
 	{
-		//WriteLog.createReportingFolder("target/cucumber-reports/report.html");
-		Reporter.loadXMLConfig(new File(System.getProperty("user.dir")
-				+ UIMapper.getValue("reportConfigPath")));
-		Reporter.setSystemInfo("User Name", System.getProperty("user.name"));
-		Reporter.setSystemInfo("Time Zone", System.getProperty("user.timezone"));
-		Reporter.setSystemInfo("Machine", "Windows 10" + "32 Bit");
-		Reporter.setSystemInfo("Selenium", "3.7.0");
-		Reporter.setSystemInfo("Maven", "3.5.2");	
-		Reporter.setSystemInfo("Java Version", "1.8.0_151");
+		scenario.write("Finished scenario");
+		if (scenario.isFailed()) {
+			System.out.println("This scenario failed");
+			String capture = Normal_Methods.capture(driver, "Failed page");
+			Reporter.addScreenCaptureFromPath(capture, "Failed Page");
+		}	 
 	}
 	
 	
@@ -76,8 +71,6 @@ public class TestSteps extends Normal_Methods
 	public void clicks_on_proceed_button() throws Throwable {
 	
 	    waitAndDoActionXpath(UIMapper.getValue("proceed"));
-		//Normal_Methods.waitUntilElementIsClickable(proceed, 35);
-		//driver.findElement(By.cssSelector("span:contains('Proceed')")).click();
 	}
 
 	@When("^User searches search text on search bar$")
@@ -102,7 +95,6 @@ public class TestSteps extends Normal_Methods
 
 		waitToVisible(viewAll1);
 
-		// Normal_Methods.waitToVisibleElements(viewAll1);
 		List<WebElement> viewAll = driver.findElements(By.xpath("//*[text()='+ View All Feature Details']"));
 
 		for (WebElement view : viewAll) {
@@ -125,8 +117,6 @@ public class TestSteps extends Normal_Methods
 		waitAndDoActionXpath(country);
 
 		String country1 =UIMapper.getValue("country1");
-
-		// String value = "Angola";
 
 		dropDownSelect(country1, accessTestData(testCaseName, "Country"));
 
@@ -202,21 +192,17 @@ public class TestSteps extends Normal_Methods
 	public void opens_the_mddx_site() throws Throwable {
 		driver.get("http://t.mddximage.com");
 	    driver.manage().window().maximize();
-	    /*String capture=Normal_Methods.capture(driver, "MDDX Page");
-	    Reporter.addScreenCaptureFromPath(capture, "MDDX Page");*/
 	}
 
 	@When("^clicks on signin button and gets the last login detail$")
 	public void clicks_on_signin_button_and_gets_the_last_login_detail() throws Throwable {
 		waitAndDoActionXpath(UIMapper.getValue("submit"));
 		
-		//String capture=Normal_Methods.capture(driver, "MDDX LOGIN page");
 		String capture=Normal_Methods.captureFullScreen("MDDX LOGIN page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGIN Page");
 	    
 		waitUntilElementIsClickable(UIMapper.getValue("notification"), 30);
 		
-		//String capture2=Normal_Methods.capture(driver, "Notification Page");
 		String capture2=Normal_Methods.captureFullScreen("Notification Page");
 	    Reporter.addScreenCaptureFromPath(capture2, "Notification Page");
 	    
@@ -234,7 +220,6 @@ public class TestSteps extends Normal_Methods
 		
 		waitAndType(UIMapper.getValue("password"), accessTestData(testCaseName, "Password"));	
 		
-		//String capture=Normal_Methods.capture(driver, "LOGIN Details page");
 		String capture=Normal_Methods.captureFullScreen("LOGIN Details page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGIN Details Page");
 	}
@@ -244,7 +229,6 @@ public class TestSteps extends Normal_Methods
 	    
 		waitAndDoActionXpath(UIMapper.getValue("logout"));
 		
-		//String capture=Normal_Methods.capture(driver, "MDDX LOGOUT page");
 		String capture=Normal_Methods.captureFullScreen("MDDX LOGOUT page");
 	    Reporter.addScreenCaptureFromPath(capture, "LOGOUT Page");
 	}
@@ -279,11 +263,8 @@ public class TestSteps extends Normal_Methods
 	@When("^search for iphone \"(.*?)\"$")
 	public void search_for_iphone(String arg1) throws Throwable {
 	    waitAndType(UIMapper.getValue("searchBox"), "Iphone");
-	    
 	    waitAndDoActionXpath(UIMapper.getValue("searchIcon"));	    
 	}
-
-
 
 	@When("^gets the first item amount$")
 	public void gets_the_first_item_amount() throws Throwable {
@@ -387,32 +368,6 @@ public class TestSteps extends Normal_Methods
 	}
 
 	
-	/*@When("^User Enters Username and password \"(.*?)\"$")
-	public void user_Enters_Username_and_password(String arg1) throws Throwable {
-		
-	    readDataFromExcel("Users");
-		
-		
-		String requester_id=accessTestData("Requester", "Username");
-		
-		System.out.println("Requester email id "+requester_id);
-		
-		String requester_pass=accessTestData("Requester", "Password");
-		
-		System.out.println("Requester pass id "+requester_pass);
-		
-		waitAndType(UIMapper.getValue("Username"), requester_id);
-		Reporter.addStepLog("Entering username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData("Requester", "Username")+"</font>");
-		capture=Normal_Methods.capture(driver, "Username");
-	    Reporter.addScreenCaptureFromPath(capture, "Username");
-		
-		waitAndDoActionXpath(UIMapper.getValue("next"));
-		
-		waitAndType(UIMapper.getValue("Password"), requester_pass);
-		Reporter.addStepLog("Entering password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData("Requester", "Password")+"</font>");
-		capture=Normal_Methods.capture(driver, "Password");
-	    Reporter.addScreenCaptureFromPath(capture, "Password");		
-	}*/
 	@When("^User Enters Username and password of \"(.*?)\"$")
 	public void user_Enters_Username_and_password_of(String arg1) throws Throwable {
 		
@@ -441,11 +396,7 @@ public class TestSteps extends Normal_Methods
 		Reporter.addStepLog(arg1+" password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(users, "Password")+"</font>");
 		capture=Normal_Methods.capture(driver, arg1+" Password");
 	    Reporter.addScreenCaptureFromPath(capture, arg1+" Password");
-		
 	}
-
-	
-
 
 	@When("^clicks on sign in button$")
 	public void clicks_on_sign_in_button() throws Throwable {
@@ -515,7 +466,6 @@ public class TestSteps extends Normal_Methods
 
 		String capture=Normal_Methods.capture(driver, "Sign out");
 		Reporter.addScreenCaptureFromPath(capture, "Sign Out");
-
 	}
 
 	@When("^\"(.*?)\" logins in$")

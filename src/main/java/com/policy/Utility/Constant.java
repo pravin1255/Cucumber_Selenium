@@ -11,5 +11,5 @@ public class Constant {
 	public static String screehsotPath=System.getProperty("user.dir") + "/target/cucumber-reports/screenshots/";
 	public static String rootDir=System.getProperty("user.dir");
 	public static String reportPath=rootDir+"\\report\\";
-	public static ChromeDriverEx driver;
+	public static ChromeDriverEx driver;	
 }

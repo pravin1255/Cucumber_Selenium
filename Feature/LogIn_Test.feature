@@ -16,7 +16,7 @@ Feature: Login Action
     Examples: 
       | Testcase Name |
       | TC1           |
-      | TC2           |
+      
 
   @RegressionTest
   Scenario Outline: Successful login to MDDX site

@@ -16,8 +16,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.cucumber.listener.Reporter;
+//import com.cucumber.listener.Reporter;
 import com.google.common.base.Function;
+import com.cucumber.listener.Reporter;
 
 import java.io.File;
 import java.io.FileInputStream;
