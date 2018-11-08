@@ -12,9 +12,12 @@ import static com.policy.Utility.Constant.driver;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.Color;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
@@ -510,7 +513,8 @@ public class TestSteps extends Normal_Methods
 			else
 			{
 				refreshPage();
-				waitToVisibleElements(UIMapper.getValue("compose"));
+				//waitToVisibleElements(UIMapper.getValue("compose"));
+				waitToVisible(UIMapper.getValue("compose"));
 			}
 		}
 	}
@@ -546,5 +550,140 @@ public class TestSteps extends Normal_Methods
 		capture=Normal_Methods.capture(driver, arg1+"");
 		Reporter.addScreenCaptureFromPath(capture, arg1+"");
 		waitAndDoActionXpath(UIMapper.getValue("sendButton"));		
+	}
+	
+	@When("^clicks on first product \"(.*?)\"$")
+	public void clicks_on_first_product(String arg1) throws Throwable {
+	
+		Thread.sleep(3000);
+		testCaseName=arg1;
+		
+		String productName=accessTestData(testCaseName, "Product");
+		String[] prod=productName.split("[(]");
+		
+		String prod1=prod[0].trim();
+		
+		System.out.println("PRODUCT1 is "+prod1);
+	    List<WebElement> ele=driver.findElements(By.cssSelector("[title*='"+prod1+"']"));
+	    
+	    for(WebElement e:ele)
+	    {
+	    	System.out.println("Get attribute "+e.getText());
+	    	//if(e.getAttribute("text").contains(accessTestData(testCaseName, "Product")))
+	    	if(accessTestData(testCaseName, "Product").contains(e.getAttribute("text")))
+	    	{
+	    		System.out.println("Entered LOOp");
+	    		e.click();
+	    		Reporter.addStepLog("Product is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(testCaseName, "Product")+"</font>");
+	    		break;
+	    	}
+	    }
+	    
+		String capture=Normal_Methods.capture(driver, "First product");
+	    Reporter.addScreenCaptureFromPath(capture, "First product");
+	}
+	
+	@When("^User verifies the product and click on wishlist button \"(.*?)\"$")
+	public void user_verifies_the_product_and_click_on_wishlist_button(String arg1) throws Throwable {
+	
+		String text=accessTestData(arg1, "Product");
+		
+		String[] prod=text.split("[(]");
+		
+		String prod1=prod[0].trim();
+		
+		String text1="//*[text()='"+prod1+"']";
+		
+		String retrievedtext=driver.findElement(By.xpath(text1)).getText();
+		
+		System.out.println("Retrieved text "+retrievedtext);
+		
+		Assert.assertTrue("Product is not matched", (accessTestData(arg1, "Product").contains(retrievedtext)));
+		
+		System.out.println("Product is matched");
+		
+		waitToVisibleElements(UIMapper.getValue("wishlistenable"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("wishlistenable"));
+	
+		/*String background =driver.findElement(By.xpath("(//*[@opacity='.9'])[1]")).getCssValue("fill");
+		
+		System.out.println("BACK "+background);
+		
+		String hex=Color.fromString(background).asHex();
+	    Reporter.addStepLog("Background Color in HEX <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+hex+"</font>");
+	    System.out.println("Colors in hex "+hex);*/
+		
+		capture=Normal_Methods.capture(driver, "Wishlist button page");
+	    Reporter.addScreenCaptureFromPath(capture, "Wishlist button page");
+	}
+
+	@When("^User verifies the message when they click on wishlist button$")
+	public void user_verifies_the_message_when_they_click_on_wishlist_button() throws Throwable {
+	
+		String warMSG=driver.findElement(By.xpath(UIMapper.getValue("warning"))).getText();
+	    Reporter.addStepLog("Notification message <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+warMSG+"</font>");
+	    System.out.println("WARNING msg "+warMSG);
+	    
+	    capture=Normal_Methods.capture(driver, "Add Wishlist page");
+	    Reporter.addScreenCaptureFromPath(capture, "Add WishList page");
+	}
+
+	@When("^user closes the window and switch to Parent tab$")
+	public void user_closes_the_window_and_switch_to_Parent_tab() throws Throwable {	
+		driver.close();
+		switchToOldTab();
+	}
+
+	@When("^user clicks on wishlist link$")
+	public void user_clicks_on_wishlist_link() throws Throwable {
+	
+		mouseHover(UIMapper.getValue("myAccount"), UIMapper.getValue("wishList"));	
+		refreshPage();
+	}
+	
+	@When("^verifies whether added item is in wishlist\"(.*?)\"$")
+	public void verifies_whether_added_item_is_in_wishlist(String arg1) throws Throwable {
+	
+		List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
+		
+		for(WebElement ele:element)
+		{
+			String item=ele.getText();
+			
+			if((accessTestData(arg1, "Product")).contains(item))
+			{
+				Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">Added item to wishList</font>");
+				capture=Normal_Methods.capture(driver, "added page");
+			    Reporter.addScreenCaptureFromPath(capture, "added page");
+			    break;
+			}
+		}		
+	}
+	
+	@When("^Users removes the item from wishlist \"(.*?)\"$")
+	public void users_removes_the_item_from_wishlist(String arg1) throws Throwable {
+		
+List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
+		
+		for(WebElement ele:element)
+		{
+			String item=ele.getText();
+			
+			if((accessTestData(arg1, "Product")).contains(item))
+			{
+				waitAndDoActionXpath(UIMapper.getValue("deleteIcon"));
+				waitAndDoActionXpath(UIMapper.getValue("remove"));
+				waitToVisible(UIMapper.getValue("warning"));
+				
+				String warMSG=driver.findElement(By.xpath(UIMapper.getValue("warning"))).getText();
+			    Reporter.addStepLog("Notification message <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+warMSG+"</font>");
+			    System.out.println("WARNING msg "+warMSG);
+			    
+			    capture=Normal_Methods.capture(driver, "Remove WishList page");
+			    Reporter.addScreenCaptureFromPath(capture, "Remove WishList page");
+			    break;
+			}
+		}	
 	}
 }  

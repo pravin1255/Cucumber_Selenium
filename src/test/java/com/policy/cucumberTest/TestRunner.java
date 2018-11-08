@@ -55,11 +55,13 @@ public class TestRunner {
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		features="Feature/LogIn_Test.feature",
+		//features="Feature/LogIn_Test.feature",
+		features="Feature/AmazonTest.feature",
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
-		tags={"~@Policy","~@RegressionTest","~@flipkartTest","@BackgroundColor","~@Gmailapproval"}
+		//tags={"~@Policy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","@WishList"}
+		tags={"@Login"}
 		)
 public class TestRunner {	
 	@BeforeClass

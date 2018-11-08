@@ -87,3 +87,22 @@ Feature: Login Action
     Examples: 
       | Users      | Testcase Name | Level |
       | Requester  | TC1           | WK1   |
+
+@WishList
+  Scenario Outline: add item to wishlist
+    Given User opens the browser
+    And opens flipkart site
+    When user login to site "<Testcase Name>"
+    And search for product "<Testcase Name>"
+    And clicks on first product "<Testcase Name>"
+    When browser switch to new tab
+    And User verifies the product and click on wishlist button "<Testcase Name>"
+    And User verifies the message when they click on wishlist button
+    And user closes the window and switch to Parent tab
+    When user clicks on wishlist link
+    And verifies whether added item is in wishlist"<Testcase Name>" 
+    And Users removes the item from wishlist "<Testcase Name>"
+    
+    Examples: 
+      | Testcase Name |
+      | TC2           |

@@ -50,7 +50,7 @@
 			This is NEW DEPENDENCY
 		 -->
 		
-	 	    <dependency>
+	 	     <dependency>
 			<groupId>com.vimalselvam</groupId>
 			<artifactId>cucumber-extentsreport</artifactId>
 			<version>3.0.2</version>
@@ -66,7 +66,7 @@
 			<groupId>com.relevantcodes</groupId>
 			<artifactId>extentreports</artifactId>
 		 <version>2.41.1</version> 
-		</dependency>     
+		</dependency>      
 		
 		
 		
@@ -74,7 +74,7 @@
 		This is the old extent report dependency for generating the report
 		This is OLD DEPENDENCY
 		 -->
-		  <!-- <dependency>
+		  <!--  <dependency>
    			 <groupId>com.vimalselvam</groupId>
     		 <artifactId>cucumber-extentsreport</artifactId>
     		 <version>2.0.2</version>
@@ -88,8 +88,8 @@
     		<groupId>com.aventstack</groupId>
    			<artifactId>extentreports</artifactId>
     		<version>3.0.3</version>
-		</dependency> -->     
-	</dependencies>
+		</dependency>-->      
+	</dependencies> 
 
 	<build>
 		<plugins>

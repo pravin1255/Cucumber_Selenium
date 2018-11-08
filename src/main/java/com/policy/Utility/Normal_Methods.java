@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 //import com.cucumber.listener.Reporter;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.cucumber.listener.Reporter;
 
 import java.io.File;
@@ -56,6 +57,7 @@ public class Normal_Methods
 	HSSFSheet sheet;
 	
 	public int count;
+	private String backgroundProperty;
 	
 	public void highlight(WebElement element)
 	{
@@ -190,11 +192,6 @@ public class Normal_Methods
 		wait.until(function);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).clear();
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).sendKeys(value);;
-	}
-	
-	public void waitAndType2(String xpathName,String value) {
-		
-		
 	}
 	
 	public void enterTextinAutoCompletion(String xpathName, String value)
@@ -344,12 +341,29 @@ public class Normal_Methods
 		driver.switchTo().window(tab.get(1));
 	}
 	
+	public void switchToOldTab()
+	{
+		ArrayList<String> tab = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tab.get(0));
+	}
+	
 	public void getBackgroundColor(String xpathName)
 	{
 		String backgroundColor=driver.findElement(By.xpath(xpathName)).getCssValue("background-color");
 		Reporter.addStepLog("Background Color <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+backgroundColor+"</font>");
 	    System.out.println("background color is "+backgroundColor);
 	    String hex=Color.fromString(backgroundColor).asHex();
+	    Reporter.addStepLog("Background Color in HEX <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+hex+"</font>");
+	    System.out.println("Colors in hex "+hex);	   
+	}
+	
+	//Here property can be color, fill, box-sizing, margin, padding etc
+	public void getBackgroundColor(String xpathName,String property)
+	{
+		String backgroundProperty=driver.findElement(By.xpath(xpathName)).getCssValue(property);
+		Reporter.addStepLog("Background "+property+"<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+backgroundProperty+"</font>");
+	    System.out.println("background color is "+backgroundProperty);
+	    String hex=Color.fromString(backgroundProperty).asHex();
 	    Reporter.addStepLog("Background Color in HEX <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+hex+"</font>");
 	    System.out.println("Colors in hex "+hex);	   
 	}
@@ -375,6 +389,13 @@ public class Normal_Methods
 	{
 		System.out.println("Waiting for text "+text);
 		new WebDriverWait(driver, 30).until(ExpectedConditions.textToBePresentInElementLocated(By.xpath(xpath), text));		
+	}
+	
+	public void waitAndTypeCss(String css, String text)
+	{
+		System.out.println("Waiting for css "+css);
+		new WebDriverWait(driver,30).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(css))).sendKeys(text);
+		System.out.println("After waiting for CSS");
 	}
 	
 	public void waitAndDoActionCss(String cssName)
@@ -464,5 +485,28 @@ public class Normal_Methods
 	public void refreshPage()
 	{
 		driver.navigate().refresh();
+	}
+	
+	//Used for mouse hover on an element and click on the child element which is displayed when we do mouse hover	
+	public void mouseHover(String parentxpath, String childxpath)
+	{
+		Actions act = new Actions(driver);
+	    WebDriverWait wait = new WebDriverWait(driver, 10);
+	    WebElement parent = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(parentxpath)));
+	    act.moveToElement(parent).perform();
+	    WebElement child = driver.findElement(By.xpath(childxpath));
+	    child.click();
+	}
+	
+	public void assertionCheck(String userInput, String uiText)
+	{
+		Assert.assertTrue(userInput+" is not matched with "+uiText, userInput.contains(uiText));
+		
+		System.out.println("ASSERTION PASSED");
+	}
+	
+	public void back()
+	{
+		driver.navigate().back();
 	}
 }
