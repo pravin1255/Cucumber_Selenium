@@ -394,6 +394,7 @@ public class Normal_Methods
 	public void waitAndTypeCss(String css, String text)
 	{
 		System.out.println("Waiting for css "+css);
+		new WebDriverWait(driver,30).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(css))).clear();
 		new WebDriverWait(driver,30).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(css))).sendKeys(text);
 		System.out.println("After waiting for CSS");
 	}
@@ -434,7 +435,8 @@ public class Normal_Methods
 			}
 		};
 		wait.until(function);
-		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssName))).click();
+		//wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssName))).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName))).click();
 	}
 	
 	public void waitToVisibleCss(String cssName)
@@ -476,10 +478,26 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName)));
 	}
 	
+	/*
+	 * Waits for the element to be invisible
+	 */
+	public void waitToInvisible(String cssName)
+	{
+		System.out.println("Waiting for the element to be invisible");
+		new WebDriverWait(driver, 30).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(cssName)));
+		System.out.println("Element is invisible");
+	}
+	
 	public void scrollIntoView(String xpathName)
 	{
 		JavascriptExecutor js=(JavascriptExecutor)driver;
 		js.executeScript("arguments[0].scrollIntoView()", driver.findElement(By.xpath(xpathName)));
+	}
+	
+	public void jsclick(String xpathName)
+	{
+		JavascriptExecutor ex = (JavascriptExecutor)driver;
+		ex.executeScript("arguments[0].click();", driver.findElement(By.xpath(xpathName)));
 	}
 	
 	public void refreshPage()
@@ -498,6 +516,17 @@ public class Normal_Methods
 	    child.click();
 	}
 	
+	//Used for mouse hover on an element and click on the child element which is displayed when we do mouse hover	
+	public void mouseHoverCss(String parentCss, String childCss)
+	{
+		Actions act = new Actions(driver);
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		WebElement parent = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(parentCss)));
+		act.moveToElement(parent).perform();
+		WebElement child = driver.findElement(By.cssSelector(childCss));
+		child.click();
+	}
+	
 	public void assertionCheck(String userInput, String uiText)
 	{
 		Assert.assertTrue(userInput+" is not matched with "+uiText, userInput.contains(uiText));
@@ -508,5 +537,27 @@ public class Normal_Methods
 	public void back()
 	{
 		driver.navigate().back();
+	}
+	
+	/*
+	 * This method is used when we get error in chromeBrowser saying element is not clickable at point (x,x)
+	 * This error i.e WebDriverException only comes in Chrome browser
+	 */
+	public void clickXpath(String xpathName)
+	{
+		WebElement element = driver.findElement(By.xpath(xpathName));
+		Actions action = new Actions(driver);
+		action.moveToElement(element).click().perform();
+	}
+	
+	/*
+	 * This method is used when we get error in chromeBrowser saying element is not clickable at point (x,x)
+	 * This error i.e WebDriverException only comes in Chrome browser
+	 */
+	public void clickCss(String cssName)
+	{
+		WebElement element = driver.findElement(By.cssSelector(cssName));
+		Actions action = new Actions(driver);
+		action.moveToElement(element).click().perform();
 	}
 }

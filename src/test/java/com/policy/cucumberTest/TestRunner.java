@@ -61,7 +61,7 @@ public class TestRunner {
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
 		//tags={"~@Policy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","@WishList"}
-		tags={"@Login"}
+		tags={"~@Login","~@AddtoCart","~@ShoesPage","@MoveToTop"}
 		)
 public class TestRunner {	
 	@BeforeClass

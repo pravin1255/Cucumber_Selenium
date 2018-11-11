@@ -5,12 +5,15 @@ import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 import static com.policy.Utility.Constant.driver;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.List;
 
@@ -133,24 +136,154 @@ public class amazonSteps extends Normal_Methods{
 		
 		switchToNewTab();
 		
-		List<WebElement> elements1=driver.findElements(By.cssSelector("[class$='imageThumbnail a-declarative']"));
+		/*
+		 * This waitToVisibleCss is the most important step if we don't do wait here than it will not enter for loop in 
+		 * line 2 and we will always get the size as zero in line 1
+		 */
+		waitToVisibleCss("[class$='imageThumbnail a-declarative']"); 
 		
-		int i=1;
-		for(WebElement element:elements1) 
+		List<WebElement> elements1=driver.findElements(By.cssSelector("[class$='imageThumbnail a-declarative']"));
+		System.out.println("HELLO here");
+		
+		System.out.println("SIZE is "+elements1.size());//-----------------------LINE 1
+		for(WebElement element:elements1)//--------------------------------------LINE 2 
 		{
 			System.out.println("EnterED FOR LOOP");
 			element.findElement(By.cssSelector("[class$='a-button-focus']")).click();
-			
-			capture=Normal_Methods.capture(driver, "1st item UI"+i);
-			Reporter.addScreenCaptureFromPath(capture, "1st item UI"+i);
-			Reporter.addStepLog("Clicked on first item image<font style=\"color:white;background-color:rgb(251, 100, 27);\">"
-					+ accessTestData("TC1", "Product") + "</font>");
-		//	break;
-			i++;
-			continue;
+			System.out.println("EnterED FOR LOOP 2nd TIME");
+			capture=Normal_Methods.capture(driver, "1st item UI");
+			Reporter.addScreenCaptureFromPath(capture, "1st item UI");
+			Reporter.addStepLog("Clicked on item image<font style=\"color:white;background-color:rgb(251, 100, 27);\">"
+					+ accessTestData("TC1", "Product") + "</font>");			
+			break;
 		}
-		waitAndDoActionCss(UIMapper.getValue("itemA"));
+		
+		String prodTitle=driver.findElement(By.cssSelector("[id='productTitle']")).getText();
+		
+		System.out.println("Product title "+prodTitle);
+		String cssSelectorvalue="[alt='"+prodTitle+"']";
+		System.out.println("cssSelector value "+cssSelectorvalue);
+		
+		waitAndDoActionCss(cssSelectorvalue);
 		capture=Normal_Methods.capture(driver, "Zoom UI");
 		Reporter.addScreenCaptureFromPath(capture, "Zoom UI");
+		
+		waitAndDoActionCss(UIMapper.getValue("closeA"));
+	}
+	
+	@When("^user clicks on Buy Now button$")
+	public void user_clicks_on_Buy_Now_button() throws Throwable {
+		waitToVisibleCss(UIMapper.getValue("buyNowA"));
+		clickCss(UIMapper.getValue("buyNowA"));
+	}
+	
+	@When("^user edits the mailing address \"(.*?)\"$")
+	public void user_edits_the_mailing_address(String arg1) throws Throwable {
+	    waitAndDoActionXpath(UIMapper.getValue("editA"));
+	    waitToInvisible(UIMapper.getValue("spinnerA"));
+	    waitAndTypeCss(UIMapper.getValue("fullNameA"), "Pravin M");
+	    waitAndTypeCss(UIMapper.getValue("mobilenoA"), "9920530849");
+	    
+	    List<WebElement> elements=driver.findElements(By.tagName("option"));
+	    
+	    for(WebElement element:elements)
+	    {
+	    	String text=element.getAttribute("value");
+	    	System.out.println("TEXT IS"+text);
+	    	
+	    	if(text.equalsIgnoreCase("res"))
+	    	{
+	    		element.click();
+	    		break;
+	    	}
+	    }
+	    waitAndTypeCss(UIMapper.getValue("addCityA"), "Mumbai");
+	}
+	
+	@When("^user first verifies the cart image$")
+	public void user_first_verifies_the_cart_image() throws Throwable {
+	 
+		waitToVisibleCss(UIMapper.getValue("cartA"));
+		String text=driver.findElement(By.cssSelector(UIMapper.getValue("cartA"))).getText();
+		capture=Normal_Methods.capture(driver, "CART image");
+		Reporter.addScreenCaptureFromPath(capture, "CART image");
+		Reporter.addStepLog("Before adding item to cart count of cart is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"
+				+text + "</font>");
+	}
+
+	@When("^then clicks on Add to cart and again verfies the cart image$")
+	public void then_clicks_on_Add_to_cart_and_again_verfies_the_cart_image() throws Throwable {
+	 
+		String text=driver.findElement(By.cssSelector(UIMapper.getValue("cartA"))).getText();
+		
+		int num=Integer.parseInt(text);
+		
+		waitAndDoActionCss(UIMapper.getValue("cartButtonA"));
+		
+		text=driver.findElement(By.cssSelector(UIMapper.getValue("cartA"))).getText();
+		capture=Normal_Methods.capture(driver, "CART image 2");
+		Reporter.addScreenCaptureFromPath(capture, "CART image 2");
+		Reporter.addStepLog("After adding item to cart count of cart is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"
+				+text + "</font>");
+		
+		num=num+1;
+		
+		String text2=Integer.toString(num);
+		assertionCheck(text2, text);		
+	}
+
+	@When("^goes to cart page$")
+	public void goes_to_cart_page() throws Throwable {
+	 
+		waitAndDoActionCss(UIMapper.getValue("cartPageA"));
+		capture=Normal_Methods.capture(driver, "CART PAGE");
+		Reporter.addScreenCaptureFromPath(capture, "CART PAGE");
+		Reporter.addStepLog("Navigating to cart page <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+ "</font>");
+	}
+	
+	@Given("^User navigates to Men's Sport shoes section$")
+	public void user_navigates_to_Men_s_Sport_shoes_section() throws Throwable {
+		mouseHoverCss(UIMapper.getValue("shopAllA"), UIMapper.getValue("mensFashionA"));
+		waitAndDoActionXpath("//*[contains(text(),'Sports Shoes')]");		
+	}
+	
+	@Given("^user moves to Wishlist page$")
+	public void user_moves_to_Wishlist_page() throws Throwable {
+
+		mouseHover(UIMapper.getValue("orderA"), UIMapper.getValue("wishListA"));
+	}
+
+	@Given("^moves item to top of wishlist \"(.*?)\"$")
+	public void moves_item_to_top_of_wishlist(String arg1) throws Throwable {
+
+		/*String text=driver.findElement(By.xpath(UIMapper.getValue("wishlistItemA"))).getText();
+		
+		String excelData=accessTestData(arg1, "Product");
+		
+		System.out.println("TEXT "+text);
+		
+		System.out.println("ExcelData "+excelData);
+		
+		if(excelData.contains(text))
+		{
+			System.out.println("Test PASSED");
+		}
+*/		
+		List<WebElement> elements=driver.findElements(By.xpath(UIMapper.getValue("wishlistItemA")));
+		
+		for(WebElement e:elements)
+		{
+			String text1=e.getText();
+			if(text1.contains(accessTestData(arg1, "Product")))
+			{
+				System.out.println("Test PASSED");
+				break;
+			}
+		}
+	}
+
+	@Then("^item should be displayed at top of wishlist$")
+	public void item_should_be_displayed_at_top_of_wishlist() throws Throwable {
+
 	}
 }
