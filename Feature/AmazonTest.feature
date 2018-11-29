@@ -63,3 +63,21 @@ Feature: Amazon site testing
     Examples: 
       | Testcase Name |
       | TC4           |
+
+    @BuyNow
+    Scenario Outline:Buying product from amazon
+    Given User opens the web page "<Testcase Name>"
+    And navigates to Sign in link and clicks on signin button
+    And enters username and password "<Testcase Name>"
+    Then user verifies the logged in User "<Testcase Name>"
+    And user moves to Wishlist page
+    And searches for the item and clicks on item "<Testcase Name>"
+    Then User navigates to the product page
+    When user selects the size "<Testcase Name>"
+    And clicks on Buy Now button
+    Then User is taken to delivery page
+    
+    Examples:
+    |Testcase Name|
+    |TC5|
+    

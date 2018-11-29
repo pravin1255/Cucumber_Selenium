@@ -14,6 +14,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 //import com.cucumber.listener.Reporter;
@@ -556,8 +557,25 @@ public class Normal_Methods
 	 */
 	public void clickCss(String cssName)
 	{
-		WebElement element = driver.findElement(By.cssSelector(cssName));
+		/*WebElement element = driver.findElement(By.cssSelector(cssName));
 		Actions action = new Actions(driver);
-		action.moveToElement(element).click().perform();
+		action.moveToElement(element).click().perform();*/
+		new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName)));
+		System.out.println("BEFORE WAITING");
+		WebElement ele=driver.findElement(By.cssSelector(cssName));
+		if(ele.isEnabled() && ele.isDisplayed())
+		{
+			WebElement element = driver.findElement(By.cssSelector(cssName));
+			Actions action = new Actions(driver);
+			action.moveToElement(element).click().perform();
+			System.out.println("AFTER WAITING");
+		}				
+	}
+	
+	public void dropDownSelectUsingSelect(String xpathName,String value)
+	{
+		waitAndDoActionXpath(xpathName);
+		Select select=new Select(driver.findElement(By.xpath(xpathName)));
+		select.selectByVisibleText(value);
 	}
 }

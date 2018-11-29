@@ -12,8 +12,12 @@ import static com.policy.Utility.Constant.driver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
@@ -251,39 +255,116 @@ public class amazonSteps extends Normal_Methods{
 	public void user_moves_to_Wishlist_page() throws Throwable {
 
 		mouseHover(UIMapper.getValue("orderA"), UIMapper.getValue("wishListA"));
+		capture=Normal_Methods.capture(driver, "WishList Page");
+		Reporter.addScreenCaptureFromPath(capture, "Wish List");
+		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">User is on Wishlist Page </font>");
 	}
 
 	@Given("^moves item to top of wishlist \"(.*?)\"$")
 	public void moves_item_to_top_of_wishlist(String arg1) throws Throwable {
 
-		/*String text=driver.findElement(By.xpath(UIMapper.getValue("wishlistItemA"))).getText();
-		
-		String excelData=accessTestData(arg1, "Product");
-		
-		System.out.println("TEXT "+text);
-		
-		System.out.println("ExcelData "+excelData);
-		
-		if(excelData.contains(text))
-		{
-			System.out.println("Test PASSED");
-		}
-*/		
 		List<WebElement> elements=driver.findElements(By.xpath(UIMapper.getValue("wishlistItemA")));
 		
+		/*
+		 * This for loop works when adidas is in first row and we can drag the adidas file to last row
+		 */
 		for(WebElement e:elements)
 		{
 			String text1=e.getText();
-			if(text1.contains(accessTestData(arg1, "Product")))
+			System.out.println("text1 is "+text1);
+			if(text1.contains("Adidas Men's Agora 1.0 Multisport Training Shoes"))	
 			{
 				System.out.println("Test PASSED");
-				break;
+				scrollIntoView(UIMapper.getValue("wishlistItemA"));
+				Actions act=new Actions(driver);
+				
+				act.moveToElement(e.findElement(By.xpath(UIMapper.getValue("wishlistItemA")))).build().perform();
+				
+				WebElement ele= driver.findElement(By.xpath("(//*[starts-with(@data-id,'2PR46')])[1]"));
+				Point point = ele.getLocation();
+				int xcord = point.getX();
+				int ycord = point.getY();
+				
+				System.out.println("X cord is "+xcord);
+				System.out.println("Y cord is "+ycord);
+				act.dragAndDropBy(driver.findElement(By.cssSelector("[id='itemDragIcon_I1K7NMUBK9LKYB']")), 321, 729).perform();
 			}
 		}
+		
+		
+		
+		/*for(WebElement e:elements)
+		{
+			String text1=e.getText();
+			System.out.println("text1 is "+text1);
+			if(text1.contains("Adidas Men's Agora 1.0 Multisport Training Shoes"))	
+			{
+				System.out.println("Test PASSED");
+				//scrollIntoView(UIMapper.getValue("wishlistItemA"));
+				Actions act=new Actions(driver);
+				
+				act.moveToElement(e.findElement(By.xpath(UIMapper.getValue("wishlistItemA")))).build().perform();
+				
+				WebElement ele= driver.findElement(By.xpath("(//*[starts-with(@data-id,'2PR46')])[2]"));
+				Point point = ele.getLocation();
+				int xcord = point.getX();
+				int ycord = point.getY();
+				
+				System.out.println("X cord is "+xcord);
+				System.out.println("Y cord is "+ycord);
+				act.dragAndDropBy(ele.findElement(By.cssSelector("[id*='itemDragIcon']")), 321, 729).perform();
+			}
+		}*/
 	}
 
 	@Then("^item should be displayed at top of wishlist$")
 	public void item_should_be_displayed_at_top_of_wishlist() throws Throwable {
 
+	}
+	
+	//@Given("^moves item to top of wishlist \"(.*?)\"$")
+	@Then("^searches for the item and clicks on item \"(.*?)\"$")
+	public void searches_for_the_item_and_clicks_on_item(String arg1) throws Throwable {
+	
+		waitAndTypeCss(UIMapper.getValue("searchA"), accessTestData(arg1, "Product"));
+		
+		capture=Normal_Methods.capture(driver, "search Page");
+		Reporter.addScreenCaptureFromPath(capture, "search List");
+		Reporter.addStepLog("User searches for <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+accessTestData(arg1, "Product")+"</font>");		
+		driver.findElement(By.cssSelector(UIMapper.getValue("searchA"))).sendKeys(Keys.ENTER);		
+		waitAndDoActionCss("[title*=\""+accessTestData(arg1, "Product")+"\"]");			
+	}
+
+	@Then("^User navigates to the product page$")
+	public void user_navigates_to_the_product_page() throws Throwable {
+	
+		capture=Normal_Methods.capture(driver, "Product Page 1");
+		Reporter.addScreenCaptureFromPath(capture, "Product Pages 1");
+		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">User is on Product page</font>");
+	}
+
+	@When("^user selects the size \"(.*?)\"$")
+	public void user_selects_the_size(String arg1) throws Throwable {
+	
+		dropDownSelectUsingSelect(UIMapper.getValue("sizeA"), accessTestData(arg1, "Size"));
+		capture=Normal_Methods.capture(driver, "Size image");
+		Reporter.addScreenCaptureFromPath(capture, "Size image pages");
+		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">User selects the size "+accessTestData(arg1, "Size")+"</font>");
+		
+	}
+
+	@When("^clicks on Buy Now button$")
+	public void clicks_on_Buy_Now_button() throws Throwable {
+		
+		//Thread.sleep(5000);
+		clickCss(UIMapper.getValue("buyNowA"));		
+	}
+
+	@Then("^User is taken to delivery page$")
+	public void user_is_taken_to_delivery_page() throws Throwable {
+	
+		capture=Normal_Methods.capture(driver, "Delivery Page 1");
+		Reporter.addScreenCaptureFromPath(capture, "This is the Delivery page");
+		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">User is in Delivery page </font>");
 	}
 }
