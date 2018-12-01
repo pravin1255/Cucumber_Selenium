@@ -559,17 +559,7 @@ public class Normal_Methods
 	{
 		WebElement element = driver.findElement(By.cssSelector(cssName));
 		Actions action = new Actions(driver);
-		action.moveToElement(element).click().perform();
-		/*new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName)));
-		System.out.println("BEFORE WAITING");
-		WebElement ele=driver.findElement(By.cssSelector(cssName));
-		if(ele.isEnabled() && ele.isDisplayed())
-		{
-			WebElement element = driver.findElement(By.cssSelector(cssName));
-			Actions action = new Actions(driver);
-			action.moveToElement(element).click().perform();
-			System.out.println("AFTER WAITING");
-		}*/				
+		action.moveToElement(element).click().perform();						
 	}
 	
 	public void dropDownSelectUsingSelect(String xpathName,String value)

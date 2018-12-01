@@ -14,6 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
@@ -380,7 +381,12 @@ public class amazonSteps extends Normal_Methods{
 			System.out.println("Title "+title);
 			i++;
 			waitToVisibleCss(UIMapper.getValue("buyNowA"));
-			clickCss(UIMapper.getValue("buyNowA"));
+			try {
+				clickCss(UIMapper.getValue("buyNowA"));
+			} catch (StaleElementReferenceException e1) {
+				System.out.println("STALE ELEMENT EXCEPTION "+i);
+				e1.printStackTrace();
+			}
 			System.out.println("I "+i);
 			System.out.println("Title 2 "+title);
 			try
