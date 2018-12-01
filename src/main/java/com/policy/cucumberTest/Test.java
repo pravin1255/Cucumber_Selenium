@@ -1,82 +1,69 @@
 package com.policy.cucumberTest;
 
 import java.util.Map;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import java.io.FileInputStream;
 import java.util.HashMap;
 public class Test
 {
-	public static boolean isAnagram(String str1,String str2)
-	{
-		
-		Map<Character,Integer> map=new HashMap<>();
-		
-		boolean flag=true;
-		
-		String copyOfS1=str1.replace(" ","").toLowerCase();
-		
-		String copyOfS2=str2.replace(" ","").toLowerCase();
-		
-		if(copyOfS1.length()!=copyOfS2.length())
-		{
-			return false;
-		}
-		else
-		{
-			for(int i=0;i<copyOfS1.length();i++)
-			{
-
-				
-				int charCount=0;
-				
-				if(map.containsKey(copyOfS1.charAt(i)))
-				{
-					charCount=map.get(copyOfS1.charAt(i));
-				}
-				else
-				{
-					map.put(copyOfS1.charAt(i),++charCount);
-				}
-				
-				charCount=0;
-				
-				if(map.containsKey(copyOfS2.charAt(i)))
-				{
-					charCount=map.get(copyOfS2.charAt(i));
-				}
-				else
-				{
-					map.put(copyOfS2.charAt(i),--charCount);
-				}
-				
-				
-			}
-			for(int j:map.values())
-			{
-				if(j>0)
-				{
-					return flag;
-				}
-				else
-				{
-					flag=false;
-					return flag;
-				}
-			}
-			
-		}
-		
-		return flag;
-	}
 	public static void main(String[] args)
 	{
-		String str1="Mother In Lao";
+		String flow="HeadOfHR(DONE)>Manager>TeamLeader";
 		
-		String str2="Hitler Woman";
+		if(flow.lastIndexOf("(DONE)")>0)
+		{
+			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
+		}
 		
-		boolean flag=isAnagram(str1,str2);
+		String groupName=flow.split(">")[0];
 		
-		if(flag)
-			System.out.println("String is anagram");
-		else
-			System.out.println("String is not anagram");
+		System.out.println(groupName);
+		flow=groupName+"(DONE)"+flow.replaceAll(groupName, "");
+		System.out.println(flow);
+		
+		try {
+			fisacLogin(groupName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	static void fisacLogin(String groupName) throws Exception
+	{
+		HashMap<String,String> getUserInfor=getUserData();
+		
+		String userinfo=getUserInfor.get(groupName);
+		
+		String username=userinfo.split(";")[0];
+		String UID=userinfo.split(";")[1];
+		String password=userinfo.split(";")[2];
+		System.out.println("USERNAME "+username);
+		System.out.println("UID "+UID);
+		System.out.println("PASSWORD "+password);
+	}
+	
+	public static HashMap<String,String> getUserData()throws Exception
+	{
+		HashMap<String,String> map=new HashMap<>();
+		
+		FileInputStream fis=new FileInputStream("TestData.xls");
+		HSSFWorkbook wk=new HSSFWorkbook(fis);
+		HSSFSheet sheet=wk.getSheet("User2");
+		int rowNum=sheet.getPhysicalNumberOfRows();
+		
+		for(int i=1;i<rowNum;i++)
+		{
+			String userInfo=sheet.getRow(i).getCell(0).getStringCellValue();
+			String userName=sheet.getRow(i).getCell(1).getStringCellValue();
+			String UID=sheet.getRow(i).getCell(2).getStringCellValue();
+			String pass=sheet.getRow(i).getCell(3).getStringCellValue();
+			
+			map.put(userInfo, userName+";"+UID+";"+pass);			
+		}
+		return map;
 	}
 }

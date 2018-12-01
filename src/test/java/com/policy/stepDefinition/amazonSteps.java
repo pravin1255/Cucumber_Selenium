@@ -20,6 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class amazonSteps extends Normal_Methods{
 
@@ -355,9 +356,48 @@ public class amazonSteps extends Normal_Methods{
 
 	@When("^clicks on Buy Now button$")
 	public void clicks_on_Buy_Now_button() throws Throwable {
+		/*
+		 * Here we have used do-while loop because in product page if we click once on buy now button
+		 * it was not redirecting to delivery address page because at that time page is loading and it receives the click.
+		 * So we used do-while loop. Thread.sleep can be used but its 
+		 * not recommended. 
+		 * Now how does do-while loop works
+		 * 1st in "do" we click on buy now button and check whether image in delivery page is displayed. If its not displayed
+		 * than we will get NoSuchElementException so we handled it using try-catch block,(Used Exception instead of
+		 * NoSuchElementException as NoSuchElementException was not working for catch block)
+		 * Now in while loop we check whether title not contains delivery page title name. In 1st click of buy now button
+		 * it doesn't contain delivery page title so it return true and again it enters do-while loop
+		 * Now in second time it again clicks on buy now button. This time its redirected to delivery page and 
+		 * the image gets displayed and the title of the delivery page we got. Now in while loop we check again the condition 
+		 * i.e title not contains delivery page title and this time it return false as it contains delivery page title 
+		 * and it comes out of do-while loop		 *  
+		 */
 		
-		//Thread.sleep(5000);
-		clickCss(UIMapper.getValue("buyNowA"));		
+		int i=0;
+		String title=driver.getTitle();
+		do
+		{
+			System.out.println("Title "+title);
+			i++;
+			waitToVisibleCss(UIMapper.getValue("buyNowA"));
+			clickCss(UIMapper.getValue("buyNowA"));
+			System.out.println("I "+i);
+			System.out.println("Title 2 "+title);
+			try
+			{
+				boolean flag=driver.findElement(By.cssSelector("[src*='pickup_flag_icon']")).isDisplayed();
+				if(flag)
+				{
+					title=driver.getTitle();
+					System.out.println("Title inside if "+title);
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println("Exception catch count "+i);
+			}
+		}
+		while(!title.contains("Enter the delivery address for this order"));
 	}
 
 	@Then("^User is taken to delivery page$")
@@ -366,5 +406,9 @@ public class amazonSteps extends Normal_Methods{
 		capture=Normal_Methods.capture(driver, "Delivery Page 1");
 		Reporter.addScreenCaptureFromPath(capture, "This is the Delivery page");
 		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">User is in Delivery page </font>");
+	}
+	public void worflowimplementation()
+	{
+		
 	}
 }
