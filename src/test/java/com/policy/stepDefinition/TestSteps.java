@@ -4,6 +4,7 @@ import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 //import com.cucumber.listener.Reporter;
 
@@ -686,4 +687,35 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 			}
 		}	
 	}
+	
+	@When("^Clicks on attach button$")
+	public void clicks_on_attach_button() throws Throwable {
+	    waitAndDoActionXpath(UIMapper.getValue("attachD"));
+	    String capture=Normal_Methods.capture(driver, "Attach Button");
+	    Reporter.addScreenCaptureFromPath(capture, "Attach Button");
+	}
+
+	@When("^attaches the file for uploading$")
+	public void attaches_the_file_for_uploading() throws Throwable {
+		uploadFile("C:\\Users\\Pravin Shetty\\Pictures\\Saved Pictures\\butterfly.jpg");
+		
+		
+	}
+
+	@Then("^the files gets uploaded and Users checks the attached file$")
+	public void the_files_gets_uploaded_and_Users_checks_the_attached_file() throws Throwable {
+	    
+		waitToVisibleCss("[class='vI']");
+		String text=driver.findElement(By.cssSelector("[class='vI']")).getText();
+		System.out.println("Text "+text);
+		String text2="C:\\Users\\Pravin Shetty\\Pictures\\Saved Pictures\\butterfly.jpg";
+		String[] text3=text2.split("\\\\");
+		
+		System.out.println("Splitted text "+text3[5]);
+		
+		String capture=Normal_Methods.capture(driver, "Uploaded File");
+	    Reporter.addScreenCaptureFromPath(capture, "Uploaded File");
+	}
+
+
 }  

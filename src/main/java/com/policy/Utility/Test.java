@@ -1,37 +1,41 @@
 package com.policy.Utility;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.Scanner;
+import java.util.HashSet;
 public class Test
 {
-	static void duplicateCharCount(String inputString)
-	{
-		HashMap<Character,Integer> charCountMap=new HashMap<>();
-		
-		for(char c:inputString.toCharArray())
-		{
-			if(charCountMap.containsKey(c))
-			{
-				charCountMap.put(c,charCountMap.get(c)+1);
-			}
-			else
-			{
-				charCountMap.put(c,1);
-			}
-		}
-		
-		Set<Character> charInString=charCountMap.keySet();	
-		
-		for(char ch:charInString)
-		{
-			if(charCountMap.get(ch)>1)
-			{
-				System.out.println(ch+" "+charCountMap.get(ch));
-			}
-		}
-	}
 	public static void main(String[] args)
 	{
-		duplicateCharCount("Better Butter");
+		try(Scanner sc=new Scanner(System.in);)
+		{
+			System.out.println("Enter String ");
+			
+			String str=sc.nextLine();
+			
+			boolean flag=isUnique(str);
+			
+			if(flag)
+				System.out.println(str+" is unique ");
+			else
+				System.out.println(str+" is not unique ");
+		}
+	}
+	
+	public static boolean isUnique(String str)
+	{
+		HashSet<String> set=new HashSet<>();
+		
+		boolean flag=true;
+		
+		for(String s:str.split(" "))
+		{
+			flag=set.add(s);
+			
+			if(flag==false)
+			{
+				return flag;
+			}				
+		}
+		return flag;
 	}
 }

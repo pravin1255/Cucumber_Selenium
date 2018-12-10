@@ -16,7 +16,6 @@ Feature: Login Action
     Examples: 
       | Testcase Name |
       | TC1           |
-      
 
   @RegressionTest
   Scenario Outline: Successful login to MDDX site
@@ -65,7 +64,7 @@ Feature: Login Action
     And clicks on sign in button
     When users clicks on Compose button
     And composes mail "<Testcase Name>" and sends to "Approver 1"
-   	And Logout from Gmail Account
+    And Logout from Gmail Account
     When "Approver 1" logins in
     When User Enters Username and password of "Approver 1"
     And clicks on sign in button
@@ -78,6 +77,7 @@ Feature: Login Action
     And clicks on sign in button
     When "Approver 2" opens the mail received by of subjectLines "<Testcase Name>"
     And "Approver 2" confirms the Subject line and mail body "<Testcase Name>"
+
     #And clicks on reply button
     #And sends response to Requester
     #When Requester logins in
@@ -85,10 +85,10 @@ Feature: Login Action
     #And clicks on sign in button
     #And opens the mail received by Approver2
     Examples: 
-      | Users      | Testcase Name | Level |
-      | Requester  | TC1           | WK1   |
+      | Users     | Testcase Name | Level |
+      | Requester | TC1           | WK1   |
 
-@WishList
+  @WishList
   Scenario Outline: add item to wishlist
     Given User opens the browser
     And opens flipkart site
@@ -100,9 +100,23 @@ Feature: Login Action
     And User verifies the message when they click on wishlist button
     And user closes the window and switch to Parent tab
     When user clicks on wishlist link
-    And verifies whether added item is in wishlist"<Testcase Name>" 
+    And verifies whether added item is in wishlist"<Testcase Name>"
     And Users removes the item from wishlist "<Testcase Name>"
-    
+
     Examples: 
       | Testcase Name |
       | TC2           |
+
+  @FileUpload
+  Scenario Outline: File upload functionality testing
+    Given User opens the browser
+    And go to gmail login page
+    When User Enters Username and password of "Requester"
+    And clicks on sign in button
+    When users clicks on Compose button
+    And Clicks on attach button
+    And attaches the file for uploading
+    Then the files gets uploaded and Users checks the attached file
+Examples:
+|Testcase Name|
+|Requester|

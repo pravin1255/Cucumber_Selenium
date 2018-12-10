@@ -32,6 +32,9 @@ import static com.policy.Utility.Constant.driver;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -257,12 +260,15 @@ public class Normal_Methods
 				
 				System.out.println("The sheet name is "+sheet);
 				
+				//row count starts from zero so the count will be 2 if there are 3 row in sheet
 				rowCount=sheet.getLastRowNum();
 				
 				System.out.println("The rowcount is "+rowCount);
 				
 				colCount=sheet.getRow(0).getLastCellNum();
 				
+				//column count starts from 1 but for getColumn we should always start from 0 and not from 1 and column count will 
+				//be 5 if there are 5 column
 				System.out.println("The column count is "+colCount);
 				
 				for(int i=1;i<=sheet.getLastRowNum();i++)
@@ -567,5 +573,29 @@ public class Normal_Methods
 		waitAndDoActionXpath(xpathName);
 		Select select=new Select(driver.findElement(By.xpath(xpathName)));
 		select.selectByVisibleText(value);
+	}
+	
+	public void uploadFile(String fileName)
+	{
+		StringSelection stringSelection=new StringSelection(fileName);
+		Clipboard clipboard=Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.setContents(stringSelection, null);
+		
+		Robot robot=null;
+		
+		try {
+			robot=new Robot();
+			
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+		robot.delay(2000);
+	    robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_ENTER);
+        robot.delay(150);
+        robot.keyRelease(KeyEvent.VK_ENTER);		
 	}
 }
