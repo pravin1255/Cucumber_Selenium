@@ -1,17 +1,43 @@
 package com.policy.cucumberTest;
 
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.policy.Utility.Normal_Methods;
+
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
-public class Test
+public class Test extends Normal_Methods
 {
-	public static void main(String[] args)
+	
+	public void m1() throws Exception
 	{
-		String flow="HeadOfHR(DONE)>Manager>TeamLeader";
+		readDataFromExcel("Workflow Name");
+		String flow2=accessTestData("WK3", "WorkFlow");
+		System.out.println("FLOW 2"+flow2);
+		String arg1=flow2.substring(flow2.indexOf(">")+1);
+		String[] arg2=arg1.split(">");
+		System.out.println(Arrays.toString(arg2));
+		LinkedHashMap<Integer,String> map=new LinkedHashMap<>();
+		
+		for(int i=0;i<arg2.length;i++)
+		{
+			map.put(i+1, arg2[i]);
+			System.out.println(map);
+			
+			readDataFromExcel("User2");
+			
+			System.out.println("APPROVER "+(i+1)+" "+accessTestData(map.get(i+1), "Username"));			
+		}
+	}
+	public static void main(String[] args) throws Exception
+	{
+		/*String flow="HeadOfHR(DONE)>Manager>TeamLeader";
 		
 		if(flow.lastIndexOf("(DONE)")>0)
 		{
@@ -27,9 +53,10 @@ public class Test
 		try {
 			fisacLogin(groupName);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		
+		new Test().m1();
 	}
 	
 	static void fisacLogin(String groupName) throws Exception
@@ -58,11 +85,11 @@ public class Test
 		for(int i=1;i<rowNum;i++)
 		{
 			String userInfo=sheet.getRow(i).getCell(0).getStringCellValue();
-			String userName=sheet.getRow(i).getCell(1).getStringCellValue();
-			String UID=sheet.getRow(i).getCell(2).getStringCellValue();
+			String profileName=sheet.getRow(i).getCell(1).getStringCellValue();
+			String username=sheet.getRow(i).getCell(2).getStringCellValue();
 			String pass=sheet.getRow(i).getCell(3).getStringCellValue();
 			
-			map.put(userInfo, userName+";"+UID+";"+pass);			
+			map.put(userInfo, profileName+";"+username+";"+pass);			
 		}
 		return map;
 	}

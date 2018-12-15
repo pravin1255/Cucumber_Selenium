@@ -10,9 +10,13 @@ import cucumber.api.java.en.When;
 
 import static com.policy.Utility.Constant.driver;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -29,6 +33,8 @@ import com.cucumber.listener.Reporter;
 public class TestSteps extends Normal_Methods 
 {
 	String capture="";
+	String flow="";
+	
 	@Before
 	public void loadProperties(Scenario scenario) throws IOException
 	{
@@ -701,6 +707,15 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		
 		
 	}
+	
+	@When("^attaches the file for uploading \"(.*?)\"$")
+	public void attaches_the_file_for_uploading(String arg1) throws Throwable {
+		
+		readDataFromExcel("Gmail");
+		String str1=System.getProperty("user.dir")+accessTestData(arg1, "File Attach");
+		System.out.println("The upload file is "+str1);
+	    uploadFile(System.getProperty("user.dir")+accessTestData(arg1, "File Attach"));
+	}
 
 	@Then("^the files gets uploaded and Users checks the attached file$")
 	public void the_files_gets_uploaded_and_Users_checks_the_attached_file() throws Throwable {
@@ -717,5 +732,102 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 	    Reporter.addScreenCaptureFromPath(capture, "Uploaded File");
 	}
 
+	@When("^Users implements the given workflow \"(.*?)\"$")
+	public void users_implements_the_given_workflow(String arg1) throws Throwable {
+	 
+		readDataFromExcel("Workflow Name");
+		
+		flow=accessTestData(arg1, "WorkFlow");
+		
+		if(flow.lastIndexOf("(DONE)")>0)
+		{
+			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
+		}
+		
+		
+	}
 
+	@When("^Loggins with the users$")
+	public void loggins_with_the_users() throws Throwable {
+		
+		String groupName=flow.split(">")[0];
+		
+		System.out.println("GroupName 1"+groupName);
+		flow=groupName+"(DONE)"+flow.replaceAll(groupName, "");
+		System.out.println(flow);
+		try {
+			gmailLogin(groupName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	void gmailLogin(String groupName) throws Exception
+	{
+		HashMap<String,String> getUserInfor=getUserData();
+		
+		String userinfo=getUserInfor.get(groupName);
+		
+		String profileName=userinfo.split(";")[0];
+		String username=userinfo.split(";")[1];
+		String password=userinfo.split(";")[2];
+		System.out.println("PROFILE_NAME "+profileName);
+		System.out.println("USERNAME "+username);
+		System.out.println("PASSWORD "+password);
+		
+		waitAndType(UIMapper.getValue("Username"), username);
+		Reporter.addStepLog("username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+username+"</font>");
+		capture=Normal_Methods.capture(driver, username);
+	    Reporter.addScreenCaptureFromPath(capture, username);
+		
+		waitAndDoActionXpath(UIMapper.getValue("next"));
+		
+		waitAndType(UIMapper.getValue("Password"), password);
+		Reporter.addStepLog("password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+password+"</font>");
+		capture=Normal_Methods.capture(driver, password);
+	    Reporter.addScreenCaptureFromPath(capture, password);
+		
+		
+	}
+	
+	public static HashMap<String,String> getUserData()throws Exception
+	{
+		HashMap<String,String> map=new HashMap<>();
+		
+		FileInputStream fis=new FileInputStream("TestData.xls");
+		HSSFWorkbook wk=new HSSFWorkbook(fis);
+		HSSFSheet sheet=wk.getSheet("User2");
+		int rowNum=sheet.getPhysicalNumberOfRows();
+		
+		for(int i=1;i<rowNum;i++)
+		{
+			String userInfo=sheet.getRow(i).getCell(0).getStringCellValue();
+			String profileName=sheet.getRow(i).getCell(1).getStringCellValue();
+			String username=sheet.getRow(i).getCell(2).getStringCellValue();
+			String password=sheet.getRow(i).getCell(3).getStringCellValue();
+			
+			map.put(userInfo, profileName+";"+username+";"+password);			
+		}
+		return map;
+	}
+	
+	@Then("^users enters subject line and sends the mail to Approver1 \"(.*?)\"$")
+	public void users_enters_subject_line_and_sends_the_mail_to_Approver(String arg1) throws Throwable {
+	  
+		waitAndType(UIMapper.getValue("subject"), accessTestData(arg1, "Subject Line"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("//*[contains(text(),'Recipients')]"));
+		
+		
+		waitAndType(UIMapper.getValue("//*[@name='to']"),"");
+	}
+	
+	public void approverName()
+	{
+		readDataFromExcel("Workflow Name");
+		
+		String flow2=accessTestData("WK2", "Workflow");
+		
+		
+	}
 }  

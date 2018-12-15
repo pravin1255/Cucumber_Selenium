@@ -117,6 +117,24 @@ Feature: Login Action
     And Clicks on attach button
     And attaches the file for uploading
     Then the files gets uploaded and Users checks the attached file
-Examples:
-|Testcase Name|
-|Requester|
+
+    Examples: 
+      | Testcase Name |
+      | Requester     |
+
+  @FileDownload3Users
+  Scenario Outline: File upload,Download and workflow functionality testing
+    Given User opens the browser
+    And go to gmail login page
+    When Users implements the given workflow "<Workflow Name>"
+    And Loggins with the users
+   	And clicks on sign in button
+    When users clicks on Compose button
+    And Clicks on attach button
+    And attaches the file for uploading "<Testcase Name>"
+    Then the files gets uploaded and Users checks the attached file
+    And users enters subject line and sends the mail to Approver1 "<Testcase Name>"
+
+    Examples: 
+      | Testcase Name | Workflow Name |
+      | TC2           | WK2           |

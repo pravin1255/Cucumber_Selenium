@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import com.cucumber.listener.Reporter;
 
 
-//import com.cucumber.listener.ExtentProperties;//uncomment for new extent report
+import com.cucumber.listener.ExtentProperties;//uncomment for new extent report
 import com.policy.Utility.UIMapper;
 import com.policy.Utility.WriteLog;
 import cucumber.api.junit.Cucumber;
@@ -20,7 +20,7 @@ import cucumber.api.CucumberOptions;
  * To generate this report in pom.xml uncomment the "This is OLD DEPENDENCY" dependencies
  * 
  */
-@RunWith(Cucumber.class)
+/*@RunWith(Cucumber.class)
 @CucumberOptions(
 		features="Feature",
 		glue={"com.policy.stepDefinition"},
@@ -44,7 +44,7 @@ public class TestRunner {
 		Reporter.setSystemInfo("Java Version", "1.8.0_151");
 		Reporter.setTestRunnerOutput("Cucumber JUnit Test Runner");
 	}
-}
+}*/
 
 
 /*
@@ -53,15 +53,15 @@ public class TestRunner {
  * 
  */
 
-/*@RunWith(Cucumber.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
-		//features="Feature/LogIn_Test.feature",
-		features="Feature/AmazonTest.feature",
+		features="Feature/LogIn_Test.feature",
+		//features="Feature/AmazonTest.feature",
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
 		//tags={"~@Policy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","@WishList"}
-		tags={"~@Login","~@AddtoCart","~@ShoesPage","~@MoveToTop","@BuyNow"}
+		tags={"~@Login","~@AddtoCart","~@ShoesPage","~@MoveToTop","~@BuyNow","@FileDownload3Users"}
 		)
 public class TestRunner {	
 	@BeforeClass
@@ -84,4 +84,4 @@ public class TestRunner {
 		Reporter.setSystemInfo("Java Version", "1.8.0_151");
 		WriteLog.copyScreenshot();
 	}
-}*/
+}
