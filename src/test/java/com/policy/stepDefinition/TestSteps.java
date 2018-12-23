@@ -12,7 +12,10 @@ import static com.policy.Utility.Constant.driver;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -23,6 +26,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
@@ -34,6 +39,10 @@ public class TestSteps extends Normal_Methods
 {
 	String capture="";
 	String flow="";
+	Boolean userNamePresent,expandg;
+	
+	
+	LinkedHashMap<String,String> approver=new LinkedHashMap<>();
 	
 	@Before
 	public void loadProperties(Scenario scenario) throws IOException
@@ -737,19 +746,22 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 	 
 		readDataFromExcel("Workflow Name");
 		
+		System.out.println("FLOW 1"+flow);
 		flow=accessTestData(arg1, "WorkFlow");
-		
+		System.out.println("FLOW 2"+flow);
 		if(flow.lastIndexOf("(DONE)")>0)
 		{
 			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
 		}
-		
-		
 	}
 
 	@When("^Loggins with the users$")
 	public void loggins_with_the_users() throws Throwable {
 		
+		if(flow.lastIndexOf("(DONE)")>0)
+		{
+			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
+		}
 		String groupName=flow.split(">")[0];
 		
 		System.out.println("GroupName 1"+groupName);
@@ -775,19 +787,90 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		System.out.println("USERNAME "+username);
 		System.out.println("PASSWORD "+password);
 		
-		waitAndType(UIMapper.getValue("Username"), username);
-		Reporter.addStepLog("username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+username+"</font>");
-		capture=Normal_Methods.capture(driver, username);
-	    Reporter.addScreenCaptureFromPath(capture, username);
+		try {
+			List ele=new WebDriverWait(driver,10).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(UIMapper.getValue("Username"))));
+			userNamePresent=ele.size()>0;
+			System.out.println("Boolean value of userNamePresent and size"+userNamePresent+" "+ele.size());
+		} catch (Exception e1) {
+			System.out.println("USERNAME IS NOT PRESENT");
+			//e1.printStackTrace();
+		}
+		try {
+			List ele1=new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(UIMapper.getValue("logoutExpand"))));
+			expandg=ele1.size()>0;
+			System.out.println("Boolean value of expandg "+expandg);
+		} catch (Exception e1) {
+			System.out.println("LOGOUT EXPAND IS NOT PRESENT");
+			//e1.printStackTrace();
+		}
 		
-		waitAndDoActionXpath(UIMapper.getValue("next"));
-		
-		waitAndType(UIMapper.getValue("Password"), password);
-		Reporter.addStepLog("password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+password+"</font>");
-		capture=Normal_Methods.capture(driver, password);
-	    Reporter.addScreenCaptureFromPath(capture, password);
-		
-		
+		if(userNamePresent==true)
+		{
+			System.out.println("inside if Boolean value of userNamePresent and size "+userNamePresent);
+			waitAndType(UIMapper.getValue("Username"), username);
+			Reporter.addStepLog("username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+username+"</font>");
+			capture=Normal_Methods.capture(driver, username);
+		    Reporter.addScreenCaptureFromPath(capture, username);
+			
+			waitAndDoActionXpath(UIMapper.getValue("next"));
+			
+			waitAndType(UIMapper.getValue("Password"), password);
+			Reporter.addStepLog("password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+password+"</font>");
+			capture=Normal_Methods.capture(driver, password);
+		    Reporter.addScreenCaptureFromPath(capture, password);
+		    userNamePresent=false;//this statement is very important as it becomes true 
+		}
+		else if(expandg==true)
+		{
+			waitAndDoActionCss(UIMapper.getValue("logoutExpand"));
+			String profName=driver.findElement(By.xpath(UIMapper.getValue("profileNameG"))).getText();
+			if(!profName.contains(profileName))
+			{
+				waitAndDoActionCss(UIMapper.getValue("logOut"));
+				try {
+					List ele2 = new WebDriverWait(driver, 5).until(ExpectedConditions
+							.visibilityOfAllElementsLocatedBy(By.cssSelector(UIMapper.getValue("loginDownArrow"))));
+					if(ele2.size()>0)
+					{
+						waitAndDoActionCss(UIMapper.getValue("loginDownArrow"));
+					}
+				} catch (Exception e) {
+					
+				}
+				waitAndDoActionXpath(UIMapper.getValue("useAnother"));
+				gmailLogin(groupName);
+			}
+		}
+		/*try
+		{			
+			waitAndDoActionCss(UIMapper.getValue("logoutExpand"));
+			String profName=driver.findElement(By.xpath(UIMapper.getValue("profileNameG"))).getText();
+			if(!profName.contains(profileName))
+			{
+				waitAndDoActionCss(UIMapper.getValue("logOut"));
+				try {
+					waitAndDoActionCss(UIMapper.getValue("loginDownArrow"));
+				} catch (Exception e) {
+					
+				}
+				waitAndDoActionXpath(UIMapper.getValue("useAnother"));
+				gmailLogin(groupName);
+			}
+		}
+		catch(Exception e)
+		{	
+			waitAndType(UIMapper.getValue("Username"), username);
+			Reporter.addStepLog("username <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+username+"</font>");
+			capture=Normal_Methods.capture(driver, username);
+		    Reporter.addScreenCaptureFromPath(capture, username);
+			
+			waitAndDoActionXpath(UIMapper.getValue("next"));
+			
+			waitAndType(UIMapper.getValue("Password"), password);
+			Reporter.addStepLog("password <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+password+"</font>");
+			capture=Normal_Methods.capture(driver, password);
+		    Reporter.addScreenCaptureFromPath(capture, password);
+		}	*/	
 	}
 	
 	public static HashMap<String,String> getUserData()throws Exception
@@ -822,12 +905,97 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		waitAndType(UIMapper.getValue("//*[@name='to']"),"");
 	}
 	
-	public void approverName()
+	@Then("^users enters subject line \"(.*?)\"> and sends the mail to Approver (\\d+)$")
+	public void users_enters_subject_line_and_sends_the_mail_to_Approver(String arg1, int arg2) throws Throwable {
+	 
+		readDataFromExcel("Gmail");
+		waitAndType(UIMapper.getValue("subject"), accessTestData(arg1, "Subject Line"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("//*[contains(text(),'Recipients')]"));
+		
+		LinkedHashMap<String,String> map1=m1();
+		
+		waitAndType(UIMapper.getValue("//*[@name='to']"),map1.get("APPROVER "+arg2));
+	}
+	
+	/*@Then("^users enters subject line \"(.*?)\"> and sends the mail to \"(.*?)\"$")
+	public void users_enters_subject_line_and_sends_the_mail_to(String arg1, String arg2) throws Throwable {
+	 
+		readDataFromExcel("Gmail");
+		
+		System.out.println("ARG1 "+arg1);
+		
+		System.out.println("ARG2 "+arg2);
+		waitAndType(UIMapper.getValue("subject"), accessTestData(arg1, "Subject Line"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("//*[contains(text(),'Recipients')]"));
+		
+		LinkedHashMap<String,String> map1=m1();
+		
+		waitAndType(UIMapper.getValue("//*[@name='to']"),map1.get(arg2));
+	}*/
+	
+	@Then("^users enters subject line \"(.*?)\" and sends the mail to \"(.*?)\"$")
+	public void users_enters_subject_line_and_sends_the_mail_to(String arg1, String arg2) throws Throwable {
+	  
+		readDataFromExcel("Gmail");
+		
+		System.out.println("ARG1 "+arg1);
+		
+		System.out.println("ARG2 "+arg2);
+		waitAndType(UIMapper.getValue("subject"), accessTestData(arg1, "Subject Line"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("recipients"));
+		
+		LinkedHashMap<String,String> map1=m1();
+		
+		waitAndType(UIMapper.getValue("to"),map1.get(arg2));
+		
+		capture=Normal_Methods.capture(driver, arg2+"");
+		Reporter.addScreenCaptureFromPath(capture, arg2+"");
+		
+		waitAndDoActionXpath(UIMapper.getValue("sendButton"));
+		
+		waitToVisible(UIMapper.getValue("msgSent"));
+		System.out.println(" String IS"+driver.findElement(By.xpath(UIMapper.getValue("msgSent"))).getText());
+		
+		waitUntilTextIsVisible(UIMapper.getValue("msgSent"), "Message sent.");
+		
+		waitToVisible(UIMapper.getValue("msgSent"));
+		
+		boolean condition=verifyCondition(UIMapper.getValue("msgSent"),"Message sent.");
+		
+		System.out.println("CONDITION "+condition);
+		
+		if(condition)
+		{
+			Reporter.addStepLog("Message sent<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"</font>");
+
+			capture=Normal_Methods.capture(driver, "Product");
+			Reporter.addScreenCaptureFromPath(capture, "Product");
+		}
+	}
+	
+	public LinkedHashMap<String,String> m1() throws Exception
 	{
 		readDataFromExcel("Workflow Name");
-		
-		String flow2=accessTestData("WK2", "Workflow");
-		
-		
+		String flow2=accessTestData("WK3", "WorkFlow");
+		//System.out.println("FLOW 2"+flow2);
+		String arg1=flow2.substring(flow2.indexOf(">")+1);
+		String[] arg2=arg1.split(">");
+		//System.out.println(Arrays.toString(arg2));
+		LinkedHashMap<Integer,String> map=new LinkedHashMap<>();
+		approver=new LinkedHashMap<>();
+		for(int i=0;i<arg2.length;i++)
+		{
+			map.put(i+1, arg2[i]);
+			System.out.println(map);
+			
+			readDataFromExcel("User2");			
+			System.out.println("APPROVER "+(i+1)+" "+accessTestData(map.get(i+1), "Username"));			
+			approver.put("APPROVER "+(i+1), accessTestData(map.get(i+1), "Username"));
+		}
+		System.out.println(approver);
+		return approver;
 	}
 }  

@@ -277,6 +277,8 @@ public class Normal_Methods
 					
 					//here j is starting from 1st column i.e Country column so it should be less than lastCellNum
 					//If we take less than equal to than we will get NullPointerException
+					//here for j<sheet.getRow(i) here i is important. It should not be  zero if we take 0 than
+					//we will get null pointer exception. to know use sheet Data
 					for(int j=1;j<sheet.getRow(i).getLastCellNum();j++)
 					{
 						System.out.println("value 1 "+sheet.getRow(0).getCell(j).getStringCellValue());

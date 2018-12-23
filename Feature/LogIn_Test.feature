@@ -129,12 +129,15 @@ Feature: Login Action
     When Users implements the given workflow "<Workflow Name>"
     And Loggins with the users
    	And clicks on sign in button
-    When users clicks on Compose button
-    And Clicks on attach button
-    And attaches the file for uploading "<Testcase Name>"
-    Then the files gets uploaded and Users checks the attached file
-    And users enters subject line and sends the mail to Approver1 "<Testcase Name>"
-
+    #When users clicks on Compose button
+    #And Clicks on attach button
+    #And attaches the file for uploading "<Testcase Name>"
+    #Then the files gets uploaded and Users checks the attached file
+    #And users enters subject line "<Testcase Name>" and sends the mail to "APPROVER 1"
+    And Loggins with the users
+		And clicks on sign in button
+		And Loggins with the users
+		And clicks on sign in button
     Examples: 
       | Testcase Name | Workflow Name |
       | TC2           | WK2           |

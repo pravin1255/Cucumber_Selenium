@@ -2,12 +2,9 @@ package com.policy.cucumberTest;
 
 import java.util.Map;
 import java.util.LinkedHashMap;
-
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
 import com.policy.Utility.Normal_Methods;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -15,16 +12,16 @@ import java.util.HashMap;
 public class Test extends Normal_Methods
 {
 	
-	public void m1() throws Exception
+	public LinkedHashMap<String,String> m1() throws Exception
 	{
 		readDataFromExcel("Workflow Name");
 		String flow2=accessTestData("WK3", "WorkFlow");
-		System.out.println("FLOW 2"+flow2);
+		//System.out.println("FLOW 2"+flow2);
 		String arg1=flow2.substring(flow2.indexOf(">")+1);
 		String[] arg2=arg1.split(">");
-		System.out.println(Arrays.toString(arg2));
+		//System.out.println(Arrays.toString(arg2));
 		LinkedHashMap<Integer,String> map=new LinkedHashMap<>();
-		
+		LinkedHashMap<String,String> innerMap=new LinkedHashMap<>();
 		for(int i=0;i<arg2.length;i++)
 		{
 			map.put(i+1, arg2[i]);
@@ -32,9 +29,17 @@ public class Test extends Normal_Methods
 			
 			readDataFromExcel("User2");
 			
-			System.out.println("APPROVER "+(i+1)+" "+accessTestData(map.get(i+1), "Username"));			
+			System.out.println("APPROVER "+(i+1)+" "+accessTestData(map.get(i+1), "Username"));		
+			
+			
+			
+			innerMap.put("APPROVER "+(i+1), accessTestData(map.get(i+1), "Username"));
 		}
+		System.out.println(innerMap);
+		return innerMap;
 	}
+	
+	
 	public static void main(String[] args) throws Exception
 	{
 		/*String flow="HeadOfHR(DONE)>Manager>TeamLeader";
@@ -56,7 +61,11 @@ public class Test extends Normal_Methods
 			e.printStackTrace();
 		}*/
 		
-		new Test().m1();
+		Test t=new Test();
+		
+		LinkedHashMap<String,String> map1=t.m1();
+		
+		System.out.println(map1.get("APPROVER 2"));
 	}
 	
 	static void fisacLogin(String groupName) throws Exception
