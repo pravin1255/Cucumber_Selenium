@@ -128,16 +128,41 @@ Feature: Login Action
     And go to gmail login page
     When Users implements the given workflow "<Workflow Name>"
     And Loggins with the users
-   	And clicks on sign in button
-    #When users clicks on Compose button
-    #And Clicks on attach button
-    #And attaches the file for uploading "<Testcase Name>"
-    #Then the files gets uploaded and Users checks the attached file
-    #And users enters subject line "<Testcase Name>" and sends the mail to "APPROVER 1"
+    And clicks on sign in button
+    When users clicks on Compose button
+    And Clicks on attach button
+    And attaches the file for uploading "<Testcase Name>"
+    Then the files gets uploaded and Users checks the attached file
+    And users enters subject line "<Testcase Name>" and sends the mail to "APPROVER 1"
     And Loggins with the users
-		And clicks on sign in button
-		And Loggins with the users
-		And clicks on sign in button
+    And clicks on sign in button
+    When user opens the received mail from "<Testcase Name>"
+    And clicks on download link
+
     Examples: 
       | Testcase Name | Workflow Name |
       | TC2           | WK2           |
+
+  @FileUploadValidation
+  Scenario Outline: File upload,Download and than verifying some fields from downloaded file
+    Given User opens the browser
+    And go to gmail login page
+    When Users implements the given workflow "<Workflow Name>"
+    And Loggins with the users
+    And clicks on sign in button
+    When users clicks on Compose button
+    And Clicks on attach button
+    And attaches the file for uploading "<Testcase Name>"
+    Then the files gets uploaded and Users checks the attached file
+    And users enters subject line "<Testcase Name>" and sends the mail to "APPROVER 1"
+    And Loggins with the users
+    And clicks on sign in button
+    When user opens the received mail from "<Testcase Name>"
+    And clicks on download link
+		When user opens the downloaded file
+		And checks the fields whether its having the required text "<Testcase Name>"
+		Then take the password from text field and paste in excel sheet "<Testcase Name>"
+
+    Examples: 
+      | Testcase Name | Workflow Name |
+      | TC3           | WK3           |

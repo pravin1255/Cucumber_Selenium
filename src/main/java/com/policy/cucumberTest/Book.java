@@ -1,65 +1,74 @@
 package com.policy.cucumberTest;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.LinkedHashMap;
+class Person
+{
+	String name;
+	int age;
+	
+	Person()
+	{
+		
+	}
+	
+	Person(String name,int age)
+	{
+		this.name=name;
+		this.age=age;
+	}
+	
+	public void setName()
+	{
+		System.out.println(name+" "+age);
+	}
+}
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+class Student
+{
+	String subject;
+	int rollNo;
+	
+	Student()
+	{
+		
+	}
+	
+	Student(String subject,int rollNo)
+	{
+		this.subject=subject;
+		this.rollNo=rollNo;
+	}
+	
+	public void setName()
+	{
+		System.out.println(subject+" "+rollNo);
+	}
+	
+	public String getDetails()
+	{
+		return subject+" "+rollNo;
+	}
+}
 public class Book
 {
-	LinkedHashMap<String,LinkedHashMap<String,String>> outerMap;
-	LinkedHashMap<String,String> innerMap;
-	LinkedHashMap<String,String> tempMap;
-	
-	public void readDataFromExcel(String sheetName)
+	public static <T> void m1(T t)
 	{
-		try
+		System.out.println(t.getClass().getName());
+		if(t instanceof Person)
 		{
-			FileInputStream fis=new FileInputStream("TestData.xls");
-			
-			try(HSSFWorkbook wk=new HSSFWorkbook(fis);)
-			{
-				HSSFSheet sheet=wk.getSheet(sheetName);
-				
-				outerMap=new LinkedHashMap<>();
-				
-				for(int i=1;i<=sheet.getLastRowNum();i++)
-				{
-					innerMap=new LinkedHashMap<>();
-					
-					for(int j=1;j<sheet.getRow(i).getLastCellNum();j++)
-					{
-						innerMap.put(sheet.getRow(0).getCell(j).getStringCellValue(), sheet.getRow(i).getCell(j).getStringCellValue());
-					}
-					
-					outerMap.put(sheet.getRow(i).getCell(0).getStringCellValue(), innerMap);
-				}
-				
-				System.out.println(outerMap);
-			}
+			System.out.println(new Student().getDetails());
 		}
-		catch(IOException e)
+		else if (t instanceof Student)
 		{
-			
+			((Student) t).setName();
 		}
 	}
-	
-	public void accessTestData(String testCaseName,String fieldName)
-	{
-		tempMap=new LinkedHashMap<>();
-		
-		tempMap=outerMap.get(testCaseName);
-		
-		String value=tempMap.get(fieldName);
-		
-		System.out.println(fieldName+" "+value);
-	}
-	
 	public static void main(String[] args) {
-		Book b=new Book();
-		b.readDataFromExcel("Data");
-		b.accessTestData("TC1","Country");
+		
+		Person p=new Person("Pravin", 32);
+		
+		m1(p);
+		
 		
 	}
 }

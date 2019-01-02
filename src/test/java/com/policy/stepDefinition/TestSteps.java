@@ -10,7 +10,10 @@ import cucumber.api.java.en.When;
 
 import static com.policy.Utility.Constant.driver;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,8 +43,8 @@ public class TestSteps extends Normal_Methods
 	String capture="";
 	String flow="";
 	Boolean userNamePresent,expandg;
-	
-	
+	File downloadFile;
+	ArrayList<String> lines;
 	LinkedHashMap<String,String> approver=new LinkedHashMap<>();
 	
 	@Before
@@ -723,7 +726,7 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		readDataFromExcel("Gmail");
 		String str1=System.getProperty("user.dir")+accessTestData(arg1, "File Attach");
 		System.out.println("The upload file is "+str1);
-	    uploadFile(System.getProperty("user.dir")+accessTestData(arg1, "File Attach"));
+	    uploadFile(System.getProperty("user.dir")+"\\Documents\\"+accessTestData(arg1, "File Attach"));
 	}
 
 	@Then("^the files gets uploaded and Users checks the attached file$")
@@ -998,4 +1001,100 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		System.out.println(approver);
 		return approver;
 	}
+	
+	@When("^user opens the received mail from \"(.*?)\"$")
+	public void user_opens_the_received_mail_from(String tcName) throws Throwable {
+	  		
+		waitToVisible(UIMapper.getValue("mailBodyG"));
+		
+		WebElement ele=driver.findElement(By.xpath(UIMapper.getValue("mailBodyG")+"//td[6]//span"));
+		
+		String text=ele.getText();
+		
+		System.out.println("Text is "+text);
+		
+		readDataFromExcel("Gmail");
+		
+		System.out.println("Subject line is "+accessTestData(tcName, "Subject Line"));
+		
+		if(text.contains(accessTestData(tcName, "Subject Line")))
+		{
+			waitAndDoActionXpath(UIMapper.getValue("mailBodyG"));
+			Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"Opening the received mail"+"</font>");
+
+			capture=Normal_Methods.capture(driver, "Mail");
+			Reporter.addScreenCaptureFromPath(capture, "Mail");
+		}
+	}
+
+	@When("^clicks on download link$")
+	public void clicks_on_download_link() throws Throwable {
+	  
+		waitAndDoActionXpath(UIMapper.getValue("downloadG"));
+		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">"+"Clicking on Download link"+"</font>");
+
+		capture=Normal_Methods.capture(driver, "Download");
+		Reporter.addScreenCaptureFromPath(capture, "Download");
+
+	}
+	
+	@When("^user opens the downloaded file$")
+	public void user_opens_the_downloaded_file() throws Throwable {
+	
+		downloadFile=new File("C:\\Users\\Pravin Shetty\\Downloads\\PasswordFile.txt");
+		
+		Thread.sleep(5000);
+		if(downloadFile.exists())
+		{
+			System.out.println("The file is downloaded properly");
+		}
+		else
+			System.out.println("The file is not downloaded");
+		
+	}
+
+	@When("^checks the fields whether its having the required text \"(.*?)\"$")
+	public void checks_the_fields_whether_its_having_the_required(String tcName) throws Throwable {
+	
+		readDataFromExcel("Gmail");
+		
+		lines=new ArrayList<>();
+		
+		BufferedReader reader=new BufferedReader(new FileReader(downloadFile));
+		
+		String readLine=reader.readLine();
+		
+		while(readLine!=null)
+		{
+			lines.add(readLine);
+			readLine=reader.readLine();
+		}
+		
+		System.out.println("ArrayList data "+lines);
+		
+		for(String s:lines)
+		{
+			if(s.contains(accessTestData(tcName, "Matching Text")))
+			{
+				System.out.println("The text is present so EXIT THE LOOP");
+			}
+		}		
+	}
+
+	@Then("^take the password from text field and paste in excel sheet \"(.*?)\"$")
+	public void take_the_password_from_text_field_and_paste_in_excel_sheet(String tcName) throws Throwable {
+	
+		for(String s:lines)
+		{
+			if(s.contains(accessTestData(tcName, "Matching Text")))
+			{
+				s=s.substring(s.indexOf("=")+1);
+				s=s.trim();
+				
+				System.out.println("PRINTING PASSWORD "+s);
+				writeDataToExcel("Gmail", tcName,s);
+				break;
+			}
+		}
+	}	
 }  

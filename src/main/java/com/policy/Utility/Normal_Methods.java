@@ -24,6 +24,7 @@ import com.cucumber.listener.Reporter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
@@ -288,6 +289,58 @@ public class Normal_Methods
 					outerMap.put(sheet.getRow(i).getCell(0).getStringCellValue(), innerMap);
 				}
 				System.out.println(outerMap);
+			}				
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeDataToExcel(String sheetName,String testcaseName,String value)
+	{
+		try
+		{
+			FileInputStream fis=new FileInputStream("TestData.xls");
+			
+			try(HSSFWorkbook workbook=new HSSFWorkbook(fis);)
+			{
+				sheet=workbook.getSheet(sheetName);
+				
+				System.out.println("The sheet name is "+sheet);
+				
+				//row count starts from zero so the count will be 2 if there are 3 row in sheet
+				rowCount=sheet.getLastRowNum();
+				
+				System.out.println("The rowcount is "+rowCount);
+				
+				colCount=sheet.getRow(0).getLastCellNum();
+				
+				//column count starts from 1 but for getColumn we should always start from 0 and not from 1 and column count will 
+				//be 5 if there are 5 column
+				System.out.println("The column count is "+colCount);
+				
+				for(int i=1;i<=sheet.getLastRowNum();i++)
+				{
+					if(sheet.getRow(i).getCell(0).getStringCellValue().equalsIgnoreCase(testcaseName))
+					{
+						for(int j=1;j<sheet.getRow(i).getLastCellNum();j++)
+						{
+							System.out.println(sheet.getRow(i).getCell(j).getStringCellValue());
+							System.out.println("ENTERED IF");
+							if(sheet.getRow(i).getCell(j).getStringCellValue()!=null)
+							{
+								System.out.println("ENTERED SECOND IF STATEMENT");
+								sheet.getRow(i).getCell(5).setCellValue(value);
+								
+								FileOutputStream fos=new FileOutputStream("TestData.xls");
+								
+								workbook.write(fos);
+								break;
+							}	
+						}
+					}										
+				}
 			}				
 		}
 		catch(IOException e)
@@ -591,13 +644,39 @@ public class Normal_Methods
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
-		robot.delay(2000);
+		//robot.delay(2000);
 	    robot.keyPress(KeyEvent.VK_CONTROL);
         robot.keyPress(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_CONTROL);
+        robot.delay(150);
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.delay(150);
         robot.keyRelease(KeyEvent.VK_ENTER);		
+	}
+	
+	private FluentWait<WebDriver> configureWait() {
+		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+							   .withTimeout(30, TimeUnit.SECONDS)
+							   .pollingEvery(5, TimeUnit.SECONDS)
+							   .ignoring(NoSuchElementException.class);
+		
+		return wait;
+	}
+	
+	public void waitAndType(WebElement element,String message) {
+		FluentWait<WebDriver> wait = configureWait();
+		element = wait.until(ExpectedConditions.visibilityOf(element));
+		if(element.isEnabled()) {
+			element.clear();
+			element.sendKeys(message);
+		}
+	}
+	
+	public void waitAndClick(WebElement element) {
+		FluentWait<WebDriver> wait = configureWait();
+		element = wait.until(ExpectedConditions.elementToBeClickable(element));
+		if(element.isDisplayed() && element.isEnabled())
+			element.click();
 	}
 }

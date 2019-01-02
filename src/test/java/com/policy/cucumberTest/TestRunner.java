@@ -61,11 +61,11 @@ public class TestRunner {
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
 		//tags={"~@Policy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","@WishList"}
-		tags={"~@Login","~@AddtoCart","~@ShoesPage","~@MoveToTop","~@BuyNow","@FileDownload3Users"}
+		tags={"~@Login","~@AddtoCart","~@ShoesPage","~@MoveToTop","~@BuyNow","~@FileDownload3Users","@FileUploadValidation"}
 		)
 public class TestRunner {	
 	@BeforeClass
-	public static void setup() {		
+	public static void setup() {		  
 	   ExtentProperties extentProperties = ExtentProperties.INSTANCE;
 	    String folderLocation=WriteLog.createReportingFolder();
 	    extentProperties.setReportPath("target//OUTPUT_HTML//"+folderLocation+"//"+"report.html");	    
