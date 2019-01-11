@@ -679,4 +679,9 @@ public class Normal_Methods
 		if(element.isDisplayed() && element.isEnabled())
 			element.click();
 	}
+	
+	public void display()
+	{
+		System.out.println("Hello world");
+	}
 }
