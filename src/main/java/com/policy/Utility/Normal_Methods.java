@@ -328,16 +328,16 @@ public class Normal_Methods
 						{
 							System.out.println(sheet.getRow(i).getCell(j).getStringCellValue());
 							System.out.println("ENTERED IF");
-							if(sheet.getRow(i).getCell(j).getStringCellValue()!=null)
+							if(sheet.getRow(i).getCell(j).getStringCellValue().isEmpty())
 							{
 								System.out.println("ENTERED SECOND IF STATEMENT");
-								sheet.getRow(i).getCell(5).setCellValue(value);
+								sheet.getRow(i).getCell(j).setCellValue(value);
 								
 								FileOutputStream fos=new FileOutputStream("TestData.xls");
 								
 								workbook.write(fos);
 								break;
-							}	
+							}
 						}
 					}										
 				}
