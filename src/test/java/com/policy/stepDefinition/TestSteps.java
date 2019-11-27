@@ -133,6 +133,8 @@ public class TestSteps extends Normal_Methods
 		readDataFromExcel("Data");
 
 		waitAndDoActionXpath(UIMapper.getValue("health"));
+		
+		waitAndDoActionXpath(UIMapper.getValue("femaleButton"));
 
 		String country = UIMapper.getValue("country");
 
