@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 
 
 import static com.policy.Utility.Constant.driver;
+import static com.policy.Utility.Constant.wait;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -73,7 +74,7 @@ public class Normal_Methods
 	public void waitAndDoActionXpath(String xpathName) {
 		count = 1;
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
-				.withTimeout(30, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
+				.withTimeout(Constant.wait, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
 				.ignoring(StaleElementReferenceException.class).ignoring(WebDriverException.class).ignoring(Exception.class);
 
 		Function<WebDriver, Boolean> function = new Function<WebDriver, Boolean>() {
@@ -102,23 +103,27 @@ public class Normal_Methods
 	
 	public void dropDownSelect(String drop, String value) {
 		List<WebElement> ele = driver.findElements(By.xpath(drop));
-
+		System.out.println("The value is "+value);
+		int i=1;
 		for (WebElement ele1 : ele) {
+			System.out.println("Count of i "+i);
 			System.out.println("Entered list");
-			if (ele1.getText().contains(value)) {
-				System.out.println("Ele1 is " + ele1.getText());
+			System.out.println("ELE1 "+ele1.getText()+" value "+value);
+			if (ele1.getText().equals(value)) {
+				//System.out.println("Ele1 is " + ele1.getText());
 				highlight(ele1);
 				ele1.click();
 				try {
-					Robot rb = new Robot();
-					rb.keyPress(KeyEvent.VK_ESCAPE);
-					rb.keyRelease(KeyEvent.VK_ESCAPE);
+					//Robot rb = new Robot();
+					//rb.keyPress(KeyEvent.VK_ESCAPE);
+					//rb.keyRelease(KeyEvent.VK_ESCAPE);
 
-				} catch (AWTException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				break;
 			}
+			i++;
 		}
 	}
 	
@@ -126,7 +131,7 @@ public class Normal_Methods
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
-				.withTimeout(30, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
+				.withTimeout(Constant.wait, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
 				.ignoring(StaleElementReferenceException.class).ignoring(Exception.class);
 
 		Function<WebDriver, Boolean> function = new Function<WebDriver, Boolean>() {
@@ -152,6 +157,7 @@ public class Normal_Methods
 		};
 
 		wait.until(function);
+		System.out.println("After waitToVisible method");
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName)));
 	}
 	
@@ -159,7 +165,7 @@ public class Normal_Methods
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
-				.withTimeout(30, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
+				.withTimeout(Constant.wait, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
 				.ignoring(StaleElementReferenceException.class).ignoring(Exception.class);
 
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(xpathName)));
@@ -169,7 +175,7 @@ public class Normal_Methods
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
-				.withTimeout(30, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
+				.withTimeout(Constant.wait, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
 				.ignoring(StaleElementReferenceException.class).ignoring(Exception.class);
 
 		Function<WebDriver, Boolean> function = new Function<WebDriver, Boolean>() {
@@ -195,6 +201,7 @@ public class Normal_Methods
 		};
 
 		wait.until(function);
+		System.out.println("After waitAndType method");
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).clear();
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).sendKeys(value);;
 	}
@@ -205,9 +212,14 @@ public class Normal_Methods
 
 		WebElement textbox = driver.findElement(By.xpath(xpathName));
 		Action seriesOfAction = builder.moveToElement(textbox).click().sendKeys(value).build();
-
+		
 		seriesOfAction.perform();	
-			
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		/*Action series1 = builder.moveToElement(textbox).sendKeys(Keys.ARROW_DOWN).build();
 
 		series1.perform();
@@ -326,8 +338,11 @@ public class Normal_Methods
 					{
 						for(int j=1;j<sheet.getRow(i).getLastCellNum();j++)
 						{
+							System.out.println("Type :"+sheet.getRow(i).getCell(j).getCellType());
 							System.out.println(sheet.getRow(i).getCell(j).getStringCellValue());
 							System.out.println("ENTERED IF");
+							//for getStringCellValue to return empty in excel sheet in 
+							//which cell you need to write value just put 1 apostrophe i.e '
 							if(sheet.getRow(i).getCell(j).getStringCellValue().isEmpty())
 							{
 								System.out.println("ENTERED SECOND IF STATEMENT");
@@ -438,7 +453,9 @@ public class Normal_Methods
 	
 	public boolean verifyCondition(String xpath,String text)
 	{
-		String element=driver.findElement(By.xpath(xpath)).getText().toString();
+		System.out.println("Entered verifyCondition method");
+		
+		String element=driver.findElement(By.xpath(xpath)).getText();
 		
 		System.out.println("ELEMENT "+element);
 		
@@ -450,7 +467,8 @@ public class Normal_Methods
 	public static void waitUntilTextIsVisible(String xpath,String text)
 	{
 		System.out.println("Waiting for text "+text);
-		new WebDriverWait(driver, 30).until(ExpectedConditions.textToBePresentInElementLocated(By.xpath(xpath), text));		
+		new WebDriverWait(driver, 30).until(ExpectedConditions.textToBePresentInElementLocated(By.xpath(xpath), text));
+		System.out.println("After waitUntilTextIsVisible method");
 	}
 	
 	public void waitAndTypeCss(String css, String text)
@@ -497,6 +515,7 @@ public class Normal_Methods
 			}
 		};
 		wait.until(function);
+		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 		//wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssName))).click();
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName))).click();
 	}
@@ -678,5 +697,61 @@ public class Normal_Methods
 		element = wait.until(ExpectedConditions.elementToBeClickable(element));
 		if(element.isDisplayed() && element.isEnabled())
 			element.click();
+	}
+	
+	public void selectDropdown(String text, String xpathName){
+		WebElement ele=driver.findElement(By.xpath(xpathName));
+		Select select =new Select(ele);
+		select.selectByVisibleText(text);
+	}
+	
+	public void selectDropDownList(String xpathName, String text){
+		List<WebElement> list=driver.findElements(By.xpath(xpathName));
+		System.out.println("The size of the list is "+list.size());
+		for(WebElement ele:list){
+			if(ele.getText().contains(text)){
+				ele.click();
+				break;
+			}				
+		}
+	}
+	
+	public void selectCheckBox(String value){
+		String xpath="//*[text()='"+value+"']//parent::div//preceding-sibling::div[@class='checkbox_container']";
+		waitToVisible(xpath);
+		waitAndDoActionXpath(xpath);
+	}
+	
+	public void selectRadioButton(String value){
+		String xpath="//*[text()='"+value+"']//ancestor::div[@class='top_quotes_content']//following-sibling::div//*[@class='checkbox_container']";
+		waitToVisible(xpath);
+		waitAndDoActionXpath(xpath);
+	}
+	
+	public String getSelectedOptions(String xpath){
+		Select select=new Select(driver.findElement(By.xpath(xpath)));
+		List<WebElement>ele=select.getAllSelectedOptions();
+		String selectedOption=ele.get(0).getText();
+		System.out.println("The premium amount is "+selectedOption);
+		return selectedOption;
+	}
+	
+	public String getTextFromUI(String xpath){
+		waitToVisible(xpath);
+		String text=driver.findElement(By.xpath(xpath)).getText();
+		System.out.println("The Text from UI is "+text);
+		return text;
+	}
+	
+	public static int getDifference(int i, int j) {
+		System.out.println("The difference is "+(i-j));
+		return i-j;
+	}
+
+	public static int getInteger(String text){
+		String s1=text.substring(text.indexOf("₹")+2, text.indexOf("monthly")-1).replace(",", "");
+		int num=Integer.valueOf(s1);
+		System.out.println("The num is "+num);
+		return num;
 	}
 }

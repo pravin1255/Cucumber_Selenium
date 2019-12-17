@@ -30,6 +30,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.policy.Utility.Normal_Methods;
@@ -131,47 +132,103 @@ public class TestSteps extends Normal_Methods
 
 		testCaseName = arg1;
 		readDataFromExcel("Data");
-
 		waitAndDoActionXpath(UIMapper.getValue("health"));
-		
 		waitAndDoActionXpath(UIMapper.getValue("femaleButton"));
-
-		String country = UIMapper.getValue("country");
-
-		waitAndDoActionXpath(country);
-
-		String country1 =UIMapper.getValue("country1");
-
-		dropDownSelect(country1, accessTestData(testCaseName, "Country"));
+		waitAndType(UIMapper.getValue("Name"), accessTestData(testCaseName, "Name"));
+		waitAndType(UIMapper.getValue("tel"), accessTestData(testCaseName, "MobileNo"));
+		waitAndDoActionXpath(UIMapper.getValue("continue"));
 
 		try {
-			List<WebElement> ele = driver
-					.findElements(By.xpath("//*[@role='dialog']//*[@style='display: block;']//span"));
+			waitToVisible(UIMapper.getValue("TellUs"));
+			boolean flag = verifyCondition(UIMapper.getValue("TellUs"), "Tell us");
+			System.out.println("flag 1st " + flag);
 
-			ele.get(1).click();
+			try {
+				jsclick(UIMapper.getValue("Me1"));
+			} catch (Exception e) {
+				System.out.println("FAILED IN ME1");
+			}
+			try {
+				waitAndDoActionXpath(UIMapper.getValue("age"));
+				// waitToVisibleElements(UIMapper.getValue("age1"));
+				selectDropDownList(UIMapper.getValue("age1"), accessTestData(testCaseName, "Age1"));
+				waitAndDoActionXpath(UIMapper.getValue("continue"));
+				waitToVisible(UIMapper.getValue("city"));
+				enterTextinAutoCompletion(UIMapper.getValue("city"), accessTestData(testCaseName, "City1"));
+				waitAndDoActionXpath(UIMapper.getValue("viewPlans"));
+			} catch (Exception e) {
+				System.out.println("FAILED IN FILLING AGE");
+			}
 		} catch (Exception e) {
-			System.out.println(" is not present");
+			boolean flag = verifyCondition(UIMapper.getValue("FindThe"), "Find the");
+			System.out.println("flag find the" + flag);
+			jsclick(UIMapper.getValue("son"));
+			jsclick(UIMapper.getValue("plus"));
+			waitAndDoActionXpath(UIMapper.getValue("continue"));
+			waitToVisible(UIMapper.getValue("selectSelf"));
+			selectDropdown(accessTestData(testCaseName, "Age"), UIMapper.getValue("selectSelf"));
+			selectDropdown(accessTestData(testCaseName, "Son1 age"), UIMapper.getValue("Son1"));
+			selectDropdown(accessTestData(testCaseName, "Son2 age"), UIMapper.getValue("Son2"));
+			
+			waitAndDoActionXpath(UIMapper.getValue("continue"));
+			waitToVisible(UIMapper.getValue("city"));
+			enterTextinAutoCompletion(UIMapper.getValue("city"), accessTestData(testCaseName, "City"));
+			waitAndDoActionXpath(UIMapper.getValue("viewPlans"));
 		}
-		String tel =UIMapper.getValue("tel");
+	}
+	
+	@When("^selects two policy$")
+	public void selects_two_policy() throws Throwable {
 
-		waitAndType(tel, accessTestData(testCaseName, "MobileNo"));
+		try {
+			selectCheckBox("NCB Super Premium");
+			String premiumAmt=driver.findElement(By.xpath("//*[@class='quotes_select']")).getText();
+			/*Select select=new Select(driver.findElement(By.xpath("//*[@class='quotes_select']")));
+			List<WebElement>ele=select.getAllSelectedOptions();
+			System.out.println("The premium amount is "+ele.get(0).getText());*/
+			String selectedOptions=getSelectedOptions("//*[@class='quotes_select']");
+			writeDataToExcel("Data", "TC1", selectedOptions);
+			selectCheckBox("Health Pulse Enhanced");
+			
+		} catch (Exception e) {
+			selectRadioButton("NCB Super Premium");
+			selectRadioButton("Health Companion with Recharge (Money Saver)");
+		}
+	}
 
-		String city =UIMapper.getValue("city");
+	@When("^clicks on Compare now button$")
+	public void clicks_on_Compare_now_button() throws Throwable {
+		waitAndDoActionXpath(UIMapper.getValue("compareNow"));
+	}
+	
+	@Then("^verify the amount displayed in Sum insured is same in both pages \"(.*?)\"$")
+	public void verify_the_amount_displayed_in_Sum_insured_is_same_in_both_pages(String arg1) throws Throwable {
+		String testCaseName=arg1;
+		readDataFromExcel("Data");
+		waitToVisible("(//*[@class='select'])[1]");
+		String selectedValue=getSelectedOptions("(//*[@class='select'])[1]");
+		System.out.println("SELECTED VALUE "+selectedValue);
+		String excelValue=accessTestData(testCaseName, "Policy1");
+		Assert.assertEquals(excelValue, selectedValue);		
+	}
+	
+	@Then("^Gets the monthly amount of both the policy with difference$")
+	public void gets_the_monthly_amount_of_both_the_policy_with_difference() throws Throwable {
+	   String policy1AMT=getTextFromUI(UIMapper.getValue("policy1Amt"));
+	   String policy2AMT=getTextFromUI(UIMapper.getValue("policy2Amt"));
+	   Reporter.addStepLog("Amount of Policy 1 is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+policy1AMT+"</font>");
+	   Reporter.addStepLog("Amount of Policy 2 is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+policy2AMT+"</font>");
+	   Reporter.addScenarioLog("This is the scenario");
+	   int policy1 = getInteger(policy1AMT);
+	   int policy2 = getInteger(policy2AMT);
+	   int diff = getDifference(policy1, policy2);
+	   Reporter.addStepLog("Difference of policy is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+diff+"</font>");
+	}
 
-		waitAndDoActionXpath(city);
-
-		enterTextinAutoCompletion(city, accessTestData(testCaseName, "City"));
-
-		String selfCheck = UIMapper.getValue("selfCheck");
-
-		waitAndDoActionXpath(selfCheck);
-
-		String age =UIMapper.getValue("age");
-
-		dropDownSelect(age, accessTestData(testCaseName, "Age"));
+	@ Then("^Displays in the report with difference$")
+	public void displays_in_the_report_with_difference() throws Throwable {
+	   
 		
-		String capture=Normal_Methods.capture(driver, "Policy bazar page fill");
-		Reporter.addScreenCaptureFromPath(capture, "Details filled Page");
 	}
 	
 	@When("^User enters the next page \"(.*?)\"$")

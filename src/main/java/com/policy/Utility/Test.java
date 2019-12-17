@@ -2,40 +2,27 @@ package com.policy.Utility;
 
 import java.util.Scanner;
 import java.util.HashSet;
-public class Test
+public class Test extends Normal_Methods
 {
 	public static void main(String[] args)
 	{
-		try(Scanner sc=new Scanner(System.in);)
-		{
-			System.out.println("Enter String ");
-			
-			String str=sc.nextLine();
-			
-			boolean flag=isUnique(str);
-			
-			if(flag)
-				System.out.println(str+" is unique ");
-			else
-				System.out.println(str+" is not unique ");
-		}
+		String s1="₹ 1,091 monthly";
+		String s2="₹ 1,410 monthly";
+		
+		int policy1=getInteger(s1);
+		int policy2=getInteger(s2);
+		int diff=getDifference(policy1, policy2);
+		System.out.println("The diff is "+diff);
+		
 	}
 	
-	public static boolean isUnique(String str)
-	{
-		HashSet<String> set=new HashSet<>();
-		
-		boolean flag=true;
-		
-		for(String s:str.split(" "))
-		{
-			flag=set.add(s);
-			
-			if(flag==false)
-			{
-				return flag;
-			}				
-		}
-		return flag;
+	public static int getDifference(int i, int j) {
+		return i-j;
+	}
+
+	public static int getInteger(String text){
+		String s1=text.substring(text.indexOf("₹")+2, text.indexOf("monthly")-1).replace(",", "");
+		int num=Integer.valueOf(s1);
+		return num;
 	}
 }

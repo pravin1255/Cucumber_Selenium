@@ -4,15 +4,22 @@ Feature: Login Action
   Scenario Outline: Successful login to policy bazar site
     Given User opens the browser
     And opens the policy bazar site
-    When user fills all the details "<Testcase Name>"
-    And clicks on proceed button
-    When User enters the next page "<Testcase Name>"
-    And clicks on proceed button
-    When User searches search text on search bar
-    And clicks on search button
+    When user fills all the details "<Testcase Name>"   
+    And selects two policy 
+    And clicks on Compare now button
+    Then verify the amount displayed in Sum insured is same in both pages "<Testcase Name>"    
+    Examples: 
+      | Testcase Name |
+      | TC1           |
 
-    #When User clicks on View All Feature Details
-    #And gets the min and max premium amount
+@ComparePolicy
+  Scenario Outline: Successful login to policy bazar site
+    Given User opens the browser
+    And opens the policy bazar site
+    When user fills all the details "<Testcase Name>"   
+    And selects two policy 
+    And clicks on Compare now button
+    Then Gets the monthly amount of both the policy with difference
     Examples: 
       | Testcase Name |
       | TC1           |

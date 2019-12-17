@@ -60,7 +60,7 @@ public class TestRunner {
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
-		tags={"@Policy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","~@WishList"}
+		tags={"~@Policy","@ComparePolicy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","~@WishList"}
 		//tags={"~@Login","~@AddtoCart","~@ShoesPage","~@MoveToTop","~@BuyNow","~@FileDownload3Users","~@FileUploadValidation"}
 		)
 public class TestRunner {	
