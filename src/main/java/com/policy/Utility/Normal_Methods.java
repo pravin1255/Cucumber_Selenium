@@ -709,7 +709,8 @@ public class Normal_Methods
 		List<WebElement> list=driver.findElements(By.xpath(xpathName));
 		System.out.println("The size of the list is "+list.size());
 		for(WebElement ele:list){
-			if(ele.getText().contains(text)){
+			if(ele.getText().equals(text)){
+				System.out.println("The Text is "+text);
 				ele.click();
 				break;
 			}				
@@ -753,5 +754,14 @@ public class Normal_Methods
 		int num=Integer.valueOf(s1);
 		System.out.println("The num is "+num);
 		return num;
+	}
+	
+	public void addScreenshot(String text){
+		String capture=Normal_Methods.capture(driver, text);
+		try {
+			Reporter.addScreenCaptureFromPath(capture, text);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -25,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -33,6 +34,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.policy.Utility.Constant;
+import com.policy.Utility.General_Methods;
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 import com.policy.cucumberTest.ChromeDriverEx;
@@ -85,9 +88,9 @@ public class TestSteps extends Normal_Methods
 	public void opens_the_policy_bazar_site() throws Throwable {
 		 driver.get("https://www.policybazaar.com");
 	     driver.manage().window().maximize();
-	     
-	     String capture=Normal_Methods.capture(driver, "Policy bazar page");
-		 Reporter.addScreenCaptureFromPath(capture, "Policy bazar Page");
+	     addScreenshot("Policy bazar page");
+//	     String capture=Normal_Methods.capture(driver, "Policy bazar page");
+//		 Reporter.addScreenCaptureFromPath(capture, "Policy bazar Page");
 	}	
 
 	@When("^clicks on proceed button$")
@@ -133,9 +136,12 @@ public class TestSteps extends Normal_Methods
 		testCaseName = arg1;
 		readDataFromExcel("Data");
 		waitAndDoActionXpath(UIMapper.getValue("health"));
+		addScreenshot("Health");
 		waitAndDoActionXpath(UIMapper.getValue("femaleButton"));
+		addScreenshot("Female Button");
 		waitAndType(UIMapper.getValue("Name"), accessTestData(testCaseName, "Name"));
 		waitAndType(UIMapper.getValue("tel"), accessTestData(testCaseName, "MobileNo"));
+		addScreenshot("Mobile No");
 		waitAndDoActionXpath(UIMapper.getValue("continue"));
 
 		try {
@@ -164,12 +170,13 @@ public class TestSteps extends Normal_Methods
 			System.out.println("flag find the" + flag);
 			jsclick(UIMapper.getValue("son"));
 			jsclick(UIMapper.getValue("plus"));
+			addScreenshot("SON");
 			waitAndDoActionXpath(UIMapper.getValue("continue"));
 			waitToVisible(UIMapper.getValue("selectSelf"));
+			addScreenshot("Select Self");
 			selectDropdown(accessTestData(testCaseName, "Age"), UIMapper.getValue("selectSelf"));
 			selectDropdown(accessTestData(testCaseName, "Son1 age"), UIMapper.getValue("Son1"));
-			selectDropdown(accessTestData(testCaseName, "Son2 age"), UIMapper.getValue("Son2"));
-			
+			selectDropdown(accessTestData(testCaseName, "Son2 age"), UIMapper.getValue("Son2"));			
 			waitAndDoActionXpath(UIMapper.getValue("continue"));
 			waitToVisible(UIMapper.getValue("city"));
 			enterTextinAutoCompletion(UIMapper.getValue("city"), accessTestData(testCaseName, "City"));
@@ -183,9 +190,6 @@ public class TestSteps extends Normal_Methods
 		try {
 			selectCheckBox("NCB Super Premium");
 			String premiumAmt=driver.findElement(By.xpath("//*[@class='quotes_select']")).getText();
-			/*Select select=new Select(driver.findElement(By.xpath("//*[@class='quotes_select']")));
-			List<WebElement>ele=select.getAllSelectedOptions();
-			System.out.println("The premium amount is "+ele.get(0).getText());*/
 			String selectedOptions=getSelectedOptions("//*[@class='quotes_select']");
 			writeDataToExcel("Data", "TC1", selectedOptions);
 			selectCheckBox("Health Pulse Enhanced");
@@ -199,6 +203,7 @@ public class TestSteps extends Normal_Methods
 	@When("^clicks on Compare now button$")
 	public void clicks_on_Compare_now_button() throws Throwable {
 		waitAndDoActionXpath(UIMapper.getValue("compareNow"));
+		addScreenshot("Compare2");
 	}
 	
 	@Then("^verify the amount displayed in Sum insured is same in both pages \"(.*?)\"$")
@@ -206,7 +211,9 @@ public class TestSteps extends Normal_Methods
 		String testCaseName=arg1;
 		readDataFromExcel("Data");
 		waitToVisible("(//*[@class='select'])[1]");
+		addScreenshot("AMT 1");
 		String selectedValue=getSelectedOptions("(//*[@class='select'])[1]");
+		addScreenshot("AMT 2");
 		System.out.println("SELECTED VALUE "+selectedValue);
 		String excelValue=accessTestData(testCaseName, "Policy1");
 		Assert.assertEquals(excelValue, selectedValue);		
@@ -225,12 +232,29 @@ public class TestSteps extends Normal_Methods
 	   Reporter.addStepLog("Difference of policy is <font style=\"color:white;background-color:rgb(251, 100, 27);\">"+diff+"</font>");
 	}
 
-	@ Then("^Displays in the report with difference$")
-	public void displays_in_the_report_with_difference() throws Throwable {
-	   
-		
+	@Then("^User adds a new policy$")
+	public void user_adds_a_new_policy() throws Throwable {
+		General_Methods.waitAndClick(UIMapper.getValue("plusSign"), Constant.wait);
+		addScreenshot("PLUS SIGN");
+		selectDropDownList("//*[@class='css-kj6f9i-menu']//../div",accessTestData("TC1", "PolicyName1"));
+		addScreenshot("1st dropdown");
+		selectDropDownList(UIMapper.getValue("selectNewPlan"),accessTestData("TC1", "PolicyName2"));
+		addScreenshot("2nd dropdown");
+		selectDropDownList(UIMapper.getValue("selectNewPlan"),accessTestData("TC1", "Amount"));
+		addScreenshot("3rd dropdown");
 	}
 	
+	@When("^changes the policy cover to another amount \"(.*?)\"$")
+	public void changes_the_policy_cover_to_another_amount(String arg1) throws Throwable {
+	  waitAndDoActionXpath(UIMapper.getValue("cover"));
+	  waitAndDoActionXpath(UIMapper.getValue("3to5lacs"));
+	}
+
+	@When("^clicks on apply button$")
+	public void clicks_on_apply_button() throws Throwable {
+	  waitAndDoActionXpath(UIMapper.getValue("applyBTN"));
+	}
+
 	@When("^User enters the next page \"(.*?)\"$")
 	public void user_enters_the_next_page(String arg1) throws Throwable {
 

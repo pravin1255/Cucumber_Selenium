@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import com.cucumber.listener.Reporter;
 
 
-import com.cucumber.listener.ExtentProperties;//uncomment for new extent report
+//import com.cucumber.listener.ExtentProperties;//uncomment for new extent report
 import com.policy.Utility.UIMapper;
 import com.policy.Utility.WriteLog;
 import cucumber.api.junit.Cucumber;
@@ -20,13 +20,13 @@ import cucumber.api.CucumberOptions;
  * To generate this report in pom.xml uncomment the "This is OLD DEPENDENCY" dependencies
  * 
  */
-/*@RunWith(Cucumber.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
-		features="Feature",
+		features="Feature/LogIn_Test.feature",
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html", "pretty"},
 		monochrome=true,
-		tags={"~@Policy","~@RegressionTest","~@BuyNow","~@Gmailapproval","~@BuyNow","@FileUpload"}
+		tags={"~@Policy,@AddPolicy","@changePolicyAmt","~@RegressionTest","~@BuyNow","~@Gmailapproval","~@BuyNow","~@FileUpload"}
 		)
 public class TestRunner {	
 	
@@ -35,7 +35,7 @@ public class TestRunner {
 	{
 		
 		Reporter.loadXMLConfig(new File(System.getProperty("user.dir")
-				+ UIMapper.getValue("reportConfigPath")));
+				+ UIMapper.getValue("reportConfigPath2")));
 		Reporter.setSystemInfo("User Name", System.getProperty("user.name"));
 		Reporter.setSystemInfo("Time Zone", System.getProperty("user.timezone"));
 		Reporter.setSystemInfo("Machine", "Windows 10" + "32 Bit");
@@ -44,7 +44,7 @@ public class TestRunner {
 		Reporter.setSystemInfo("Java Version", "1.8.0_151");
 		Reporter.setTestRunnerOutput("Cucumber JUnit Test Runner");
 	}
-}*/
+}
 
 
 /*
@@ -53,14 +53,14 @@ public class TestRunner {
  * 
  */
 
-@RunWith(Cucumber.class)
+/*@RunWith(Cucumber.class)
 @CucumberOptions(
 		features="Feature/LogIn_Test.feature",
 		//features="Feature/AmazonTest.feature",
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:", "pretty"},
 		monochrome=true,
-		tags={"~@Policy","@ComparePolicy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","~@WishList"}
+		tags={"@Policy","@AddPolicy","~@RegressionTest","~@flipkartTest","~@BackgroundColor","~@Gmailapproval","~@WishList"}
 		//tags={"~@Login","~@AddtoCart","~@ShoesPage","~@MoveToTop","~@BuyNow","~@FileDownload3Users","~@FileUploadValidation"}
 		)
 public class TestRunner {	
@@ -84,4 +84,4 @@ public class TestRunner {
 		Reporter.setSystemInfo("Java Version", "1.8.0_151");
 		WriteLog.copyScreenshot();
 	}
-}
+}*/
