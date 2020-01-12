@@ -764,4 +764,38 @@ public class Normal_Methods
 			e.printStackTrace();
 		}
 	}
+	
+	interface interf {
+		String num(int numValue);
+	}
+	
+	public void getDateAndYear(int num) {
+		interf i = a -> {
+			switch (a) {
+			case 1:
+				return String.valueOf("01");
+			case 2:
+				return String.valueOf("02");
+			case 3:
+				return String.valueOf("03");
+			case 4:
+				return String.valueOf("04");
+			case 5:
+				return String.valueOf("05");
+			case 6:
+				return String.valueOf("06");
+			case 7:
+				return String.valueOf("07");
+			case 8:
+				return String.valueOf("08");
+			case 9:
+				return String.valueOf("09");
+			default:
+				System.out.println("Not proper num");
+			}
+			return "Not Proper Num";
+		};
+		if (num <= 9)
+			System.out.println(i.num(num));
+	}
 }
