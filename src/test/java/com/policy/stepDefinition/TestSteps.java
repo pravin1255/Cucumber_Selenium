@@ -35,7 +35,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.policy.Utility.Constant;
-import com.policy.Utility.General_Methods;
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 import com.policy.cucumberTest.ChromeDriverEx;
@@ -50,7 +49,10 @@ public class TestSteps extends Normal_Methods
 	File downloadFile;
 	ArrayList<String> lines;
 	LinkedHashMap<String,String> approver=new LinkedHashMap<>();
-	
+
+	/*
+	 * Before a class
+	 */
 	@Before
 	public void loadProperties(Scenario scenario) throws IOException
 	{
@@ -234,7 +236,6 @@ public class TestSteps extends Normal_Methods
 
 	@Then("^User adds a new policy$")
 	public void user_adds_a_new_policy() throws Throwable {
-		General_Methods.waitAndClick(UIMapper.getValue("plusSign"), Constant.wait);
 		addScreenshot("PLUS SIGN");
 		selectDropDownList("//*[@class='css-kj6f9i-menu']//../div",accessTestData("TC1", "PolicyName1"));
 		addScreenshot("1st dropdown");
