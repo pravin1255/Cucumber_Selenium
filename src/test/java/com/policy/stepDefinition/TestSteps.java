@@ -53,6 +53,7 @@ public class TestSteps extends Normal_Methods
 	/*
 	 * Before a class
 	 */
+	
 	@Before
 	public void loadProperties(Scenario scenario) throws IOException
 	{
