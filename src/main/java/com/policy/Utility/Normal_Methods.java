@@ -1,5 +1,31 @@
 package com.policy.Utility;
 
+import static com.policy.Utility.Constant.driver;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -12,44 +38,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.cucumber.listener.Reporter;
 //import com.cucumber.listener.Reporter;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.cucumber.listener.Reporter;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.LinkedHashMap;
-
-
-import static com.policy.Utility.Constant.driver;
-import static com.policy.Utility.Constant.wait;
-
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.junit.Assert;
 
 //This is the normal methods
 public class Normal_Methods 
@@ -70,6 +67,26 @@ public class Normal_Methods
 		JavascriptExecutor js=(JavascriptExecutor)driver;
 		js.executeScript("arguments[0].setAttribute('style','border:2px solid red');", element);
 	}
+	
+	public void waitUntilVisible(WebElement element){
+		FluentWait<WebDriver> fWait = new FluentWait<WebDriver>(driver)
+				.withTimeout(60, TimeUnit.SECONDS)
+				.pollingEvery(5, TimeUnit.SECONDS)
+				.ignoring(NoSuchElementException.class)
+				.ignoring(Exception.class);
+//		WebElement clicableElement = fWait.until(new Predicate<WebElement>(){
+//		public boolean test(WebElement element){
+//		return element.isDisplayed() && element.isEnabled();
+//		}
+
+		
+
+		
+//		});
+//		clicableElement.click();
+	}
+	
+	
 	
 	public void waitAndDoActionXpath(String xpathName) {
 		count = 1;
@@ -586,6 +603,11 @@ public class Normal_Methods
 		driver.navigate().refresh();
 	}
 	
+	public void scrollBottomOfPage(){
+		JavascriptExecutor ex = (JavascriptExecutor)driver;
+		ex.executeScript("window.scrollBy(0,1000)");
+	}
+	
 	//Used for mouse hover on an element and click on the child element which is displayed when we do mouse hover	
 	public void mouseHover(String parentxpath, String childxpath)
 	{
@@ -797,5 +819,25 @@ public class Normal_Methods
 		};
 		if (num <= 9)
 			System.out.println(i.num(num));
+	}
+	
+	public void waitUntilVisibleFluent(String xpath) {
+		WebElement ele = driver.findElement(By.xpath(xpath));
+		System.out.println("Enter waitUntilVisible fluent wait method");
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		wait.withTimeout(60, TimeUnit.SECONDS);
+		wait.pollingEvery(5, TimeUnit.SECONDS);
+		wait.ignoring(NoSuchElementException.class);
+		wait.until(new ExpectedCondition<Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver input) {
+				if (ele.isDisplayed()) {
+					return true;
+				} else {
+					throw new RuntimeException("The element is not visible");
+				}
+			}
+		});
 	}
 }

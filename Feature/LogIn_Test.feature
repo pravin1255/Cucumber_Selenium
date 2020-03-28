@@ -194,3 +194,14 @@ Then take the password from text field and paste in excel sheet "<Testcase Name>
 Examples: 
 	| Testcase Name | Workflow Name |
 	| TC3           | WK3           |
+
+@GetPolicyDetails 
+Scenario Outline:
+Verify the amount displayed in Sum insured is same in both pages 
+	And opens the policy bazar site 
+	When user fills all the details "<Testcase Name>" 
+	And gets all the policy information 
+	Examples: 
+		| Testcase Name |
+		| TC1           |
+	

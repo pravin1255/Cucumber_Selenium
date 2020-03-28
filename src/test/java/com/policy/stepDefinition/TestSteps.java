@@ -138,6 +138,7 @@ public class TestSteps extends Normal_Methods
 
 		testCaseName = arg1;
 		readDataFromExcel("Data");
+		waitToVisible(UIMapper.getValue("health"));
 		waitAndDoActionXpath(UIMapper.getValue("health"));
 		addScreenshot("Health");
 		waitAndDoActionXpath(UIMapper.getValue("femaleButton"));
@@ -195,12 +196,49 @@ public class TestSteps extends Normal_Methods
 			String premiumAmt=driver.findElement(By.xpath("//*[@class='quotes_select']")).getText();
 			String selectedOptions=getSelectedOptions("//*[@class='quotes_select']");
 			writeDataToExcel("Data", "TC1", selectedOptions);
-			selectCheckBox("Health Pulse Enhanced");
-			
+			selectCheckBox("Health Pulse Enhanced");			
 		} catch (Exception e) {
 			selectRadioButton("NCB Super Premium");
 			selectRadioButton("Health Companion with Recharge (Money Saver)");
 		}
+	}
+	
+	@When("^gets all the policy information$")
+	public void gets_all_the_policy_information() throws Throwable {
+		
+		Thread.sleep(10000);
+		scrollBottomOfPage();
+		Thread.sleep(10000);
+		scrollBottomOfPage();
+		List<WebElement> elements=driver.findElements(By.xpath("//div[contains(@class,'quotes_stack_content_container')]//*[@class='quotes_plan_name']"));
+		System.out.println("Size is: "+elements.size());	
+		
+//		for(WebElement ele:elements){
+//			WebElement ele1=ele.findElement(By.xpath("//*[@class='quotes_select']//option"));
+//			String xpath=ele1.toString();
+//			System.out.println("xpath: "+xpath);
+//			String selectedOption=getSelectedOptions(ele1.toString());
+//			System.out.println(selectedOption);
+//		}
+		List<WebElement> elements1=driver.findElements(By.xpath("//div[contains(@class,'quotes_stack_content_container')]"));
+		for(int i=0;i<elements.size();i++){
+			WebElement ele=elements.get(i);
+			Select select=new Select(ele.findElement(By.xpath("//*[@class='quotes_select']")));
+			List<WebElement>ele2=select.getAllSelectedOptions();
+			String selectedOption=ele2.get(0).getText();
+			//System.out.println("The premium amount is "+selectedOption);
+						
+		}
+		
+		for(int i=0;i<elements.size();i++){
+			WebElement ele=elements.get(i);
+			Thread.sleep(1000);
+			String text=ele.findElement(By.xpath("//*[@class='span_cover_content ']")).getText();
+			System.out.println("The next amount is "+text);						
+		}
+		
+		
+		
 	}
 
 	@When("^clicks on Compare now button$")
