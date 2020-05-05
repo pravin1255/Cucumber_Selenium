@@ -26,7 +26,8 @@ import cucumber.api.CucumberOptions;
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html", "pretty"},
 		monochrome=true,
-		tags={"~@Policy,~@AddPolicy","@GetPolicyDetails","~@changePolicyAmt","~@RegressionTest","~@BuyNow","~@Gmailapproval","~@BuyNow","~@FileUpload"}
+		tags = { "~@Policy,~@AddPolicy", "~@GetPolicyDetails", "~@changePolicyAmt", "~@RegressionTest", "~@BuyNow",
+				"~@Gmailapproval", "~@BuyNow", "~@FileUpload", "~@YahooApproval","@YahooApproval1","~@FileDownload3Users" }
 		)
 public class TestRunner {	
 	

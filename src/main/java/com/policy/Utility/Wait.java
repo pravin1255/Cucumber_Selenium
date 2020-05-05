@@ -24,7 +24,7 @@ public class Wait
 		js.executeScript("arguments[0].setAttribute('style','border:2px solid red');", element);
 	}
 	
-	public static void waitAndTypeFluentWaitAndExplicitWait(String xpathName, String value)
+	public static void waitAndTypeFluentWaitAndExplicitWait(final String xpathName, String value)
 	{	
 		count=1;
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver)
@@ -57,7 +57,7 @@ public class Wait
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).sendKeys(value);
 	}
 	
-	public static void waitAndDoActionFluentWaitAndExplicitWait(String xpathName) 
+	public static void waitAndDoActionFluentWaitAndExplicitWait(final String xpathName) 
 	{
 		count = 1;
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver)
@@ -89,7 +89,7 @@ public class Wait
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathName))).click();
 	}
 	
-	public static void waitTillVisibleFluentWaitAndExplicitWait(String xpathName)
+	public static void waitTillVisibleFluentWaitAndExplicitWait(final String xpathName)
 	{	
 		count=1;
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver)

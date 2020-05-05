@@ -1,14 +1,16 @@
 package com.policy.stepDefinition;
 
+
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 //import com.cucumber.listener.Reporter;
 
-import static com.policy.Utility.Constant.driver;
+//import static com.policy.Utility.Constant.driver;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.xml.utils.UnImplNode;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -39,6 +42,9 @@ import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 import com.policy.cucumberTest.ChromeDriverEx;
 import com.cucumber.listener.Reporter;
+import static com.policy.Utility.javascriptMethods.highlight;
+import static com.policy.Utility.javascriptMethods.jsClick;
+
 
 //my new step on 15-10
 public class TestSteps extends Normal_Methods 
@@ -49,7 +55,8 @@ public class TestSteps extends Normal_Methods
 	File downloadFile;
 	ArrayList<String> lines;
 	LinkedHashMap<String,String> approver=new LinkedHashMap<>();
-
+	List<String> users;
+	static ChromeDriverEx driver=getChromeDriver();
 	/*
 	 * Before a class
 	 */
@@ -80,11 +87,12 @@ public class TestSteps extends Normal_Methods
 	
 	@Given("^User opens the browser$")
 	public void user_opens_the_browser() throws Throwable {
-		ChromeOptions options = new ChromeOptions();
-		options.setExperimentalOption("useAutomationExtension", false);
-		options.addArguments("disable-infobars");
-		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+"//src//main//java//com/policy//resources//chromedriver.exe");
-	    driver=new ChromeDriverEx(options);      
+//		ChromeOptions options = new ChromeOptions();
+//		options.setExperimentalOption("useAutomationExtension", false);
+//		options.addArguments("disable-infobars");
+//		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+"//src//main//java//com/policy//resources//chromedriver.exe");
+//	    driver=new ChromeDriverEx(options);
+		
 	}
 
 	@Given("^opens the policy bazar site$")
@@ -504,14 +512,12 @@ public class TestSteps extends Normal_Methods
 	    String stages=accessTestData(testCaseName, "WorkFlow");
 	    
 	    String[] stage=stages.split("[$]");
-	    
-	    String Requester=stage[0];
-	    String Approver_1=stage[1];
-	    String Approver_2=stage[2];
-	    
-	    System.out.println("Stage 0 "+Requester+" "+"Stage 1 "+Approver_1+" "+" Stage 2"+Approver_2);	    
+	 
+	    users=new ArrayList<>();
+	    for(String s:stage) {
+	    	users.add(s);
+	    } 
 	}
-
 	
 	@When("^User Enters Username and password of \"(.*?)\"$")
 	public void user_Enters_Username_and_password_of(String arg1) throws Throwable {
@@ -880,6 +886,14 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
 		}
 	}
+	
+	@When("^Users implements the new workflow \"(.*?)\"$")
+	public void users_implements_the_new_workflow(String arg1) throws Throwable {
+		readDataFromExcel("Workflow Name");		
+		System.out.println("FLOW 1"+flow);
+		flow=accessTestData(arg1, "WorkFlow");
+		System.out.println("FLOW 2"+flow);		
+	}
 
 	@When("^Loggins with the users$")
 	public void loggins_with_the_users() throws Throwable {
@@ -888,7 +902,7 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		{
 			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
 		}
-		String groupName=flow.split(">")[0];
+		String groupName=flow.split("[$]")[0];
 		
 		System.out.println("GroupName 1"+groupName);
 		flow=groupName+"(DONE)"+flow.replaceAll(groupName, "");
@@ -900,6 +914,52 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		}
 	}
 	
+	@And("^Loggins with the users to yahoo$")
+    public void loggins_with_the_users_to_yahoo() throws Throwable {
+		if(flow.lastIndexOf("(DONE)")>0)
+		{
+			flow=flow.substring(flow.lastIndexOf("(DONE)")+7);
+		}
+		String groupName=flow.split("[$]")[0];		
+		System.out.println("GroupName 1"+groupName);
+		flow=groupName+"(DONE)"+flow.replaceAll(groupName, "");
+		System.out.println(flow);
+		try {
+			yahooLogin(groupName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+	
+	private void yahooLogin(String groupName) throws IOException {
+		readDataFromExcel("User2");
+		String profileName=accessTestData(groupName, "ProfileName");
+		boolean flag=isDisplayed(UIMapper.getValue("profileNameY"));
+		if (flag) {
+			String profileNameWeb = getTextFromUI(UIMapper.getValue("profileNameY"));
+			if (!profileName.equalsIgnoreCase(profileNameWeb)) {
+				waitAndDoActionXpath(UIMapper.getValue("profile"));
+				waitAndDoActionXpath(UIMapper.getValue("signOutyahoo"));
+				loginYahoo(groupName);
+			}
+		} else {
+			loginYahoo(groupName);
+		}				
+	}
+	
+	/*
+	 * This is the login function for yahoo
+	 */
+	public void loginYahoo(String groupName) throws IOException {
+		untilVisible(UIMapper.getValue("SignIn"));
+		waitAndDoActionXpath(UIMapper.getValue("SignIn"));
+		waitAndType(UIMapper.getValue("usernameYah"), accessTestData(groupName, "Username"));
+		jsClick(UIMapper.getValue("nextBTN"));
+		waitAndType(UIMapper.getValue("Password"), accessTestData(groupName, "Password"));
+		jsClick(UIMapper.getValue("nextBTN"));
+	}
+	
+
 	void gmailLogin(String groupName) throws Exception
 	{
 		HashMap<String,String> getUserInfor=getUserData();
@@ -1219,5 +1279,96 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 				break;
 			}
 		}
-	}	
+	}
+	
+	@Given("^go to yahoo mail$")
+	public void go_to_yahoo_mail() throws Throwable {
+		driver.get("http://www.yahoomail.com/");
+	    driver.manage().window().maximize();
+	    addScreenshot("Yahoo Login Page");	  
+	}
+
+	@When("^user enters username of \"(.*?)\" in yahoo page$")
+	public void user_enters_username_of_in_yahoo_page(String arg1) throws Throwable {
+		readDataFromExcel("User2");
+		untilVisible(UIMapper.getValue("SignIn"));
+		waitAndDoActionXpath(UIMapper.getValue("SignIn"));
+		waitAndType(UIMapper.getValue("usernameYah"), accessTestData(arg1, "Username"));
+	}
+
+	@When("^also enters password of \"(.*?)\" in yahoo page$")
+	public void also_enters_password_of_in_yahoo_page(String arg1) throws Throwable {
+		readDataFromExcel("User2");
+		waitAndType(UIMapper.getValue("Password"), accessTestData(arg1, "Password"));
+	}
+	
+	@When("^clicks on next button$")
+	public void clicks_on_next_button() throws Throwable {
+		jsClick(UIMapper.getValue("nextBTN"));
+	}
+	
+    @When("^User clicks on compose button to compose mail$")
+    public void user_clicks_on_compose_button_to_compose_mail() throws Throwable {
+    	waitAndDoActionXpath(UIMapper.getValue("composeBtnYahoo"));
+    }
+    
+    @When("^fills the required field$")
+    public void fills_the_required_field() throws Throwable {
+    	waitAndType(UIMapper.getValue("toPerson"), accessTestData("Yahoo Approver1", "Username"));
+    	readDataFromExcel("Gmail");
+    	waitAndType(UIMapper.getValue("subjectLine"), accessTestData("Yahoo Approver1", "Username"));
+    }
+    
+    @And("^fills the required field \"([^\"]*)\"$")
+    public void fills_the_required_field_something(String testcasename) throws Throwable {
+    	waitAndType(UIMapper.getValue("toPerson"), accessTestData("Yahoo Approver1", "Username"));
+    	readDataFromExcel("Gmail");
+    	waitAndType(UIMapper.getValue("subjectLine"), accessTestData(testcasename, "Subject Line"));
+    	waitAndType(driver.findElement(By.xpath(UIMapper.getValue("yahooBody"))), accessTestData(testcasename, "Email Body"));
+    	
+    }
+
+    @When("^clicks on send button$")
+    public void clicks_on_send_button() throws Throwable {
+    	waitAndDoActionXpath(UIMapper.getValue("sendBtnYahoo"));
+    }
+    
+    @And("^User logs out from the account$")
+    public void user_logs_out_from_the_account() throws Throwable {
+    	waitAndDoActionXpath(UIMapper.getValue("profile"));
+    	waitAndDoActionXpath(UIMapper.getValue("signOutyahoo"));
+    }
+    
+    @When("^user enters username of Requester in yahoo page \"(.*?)\"$")
+    public void user_enters_username_of_Requester_in_yahoo_page(String arg1) throws Throwable {
+     	readDataFromExcel("User2");
+    	for(String s:users) {
+    		untilVisible(UIMapper.getValue("SignIn"));
+    		waitAndDoActionXpath(UIMapper.getValue("SignIn"));
+    		waitAndType(UIMapper.getValue("usernameYah"), accessTestData(s, "Username"));	
+    	}	
+    }
+    
+    @When("^user enters username of user in yahoo page$")
+    public void user_enters_username_of_user_in_yahoo_page() throws Throwable {
+     	readDataFromExcel("User2");
+    	for(String s:users) {
+    		untilVisible(UIMapper.getValue("SignIn"));
+    		waitAndDoActionXpath(UIMapper.getValue("SignIn"));
+    		waitAndType(UIMapper.getValue("usernameYah"), accessTestData(s, "Username"));	
+    	}
+    }
+
+    @When("^also enters password of user in yahoo page$")
+    public void also_enters_password_of_user_in_yahoo_page() throws Throwable {
+    	readDataFromExcel("User2");
+    	for(String s:users) {
+    		waitAndType(UIMapper.getValue("Password"), accessTestData(s, "Password"));	
+    	}		
+    }
+    
+    @When("^User clicks on Sign in link$")
+    public void user_clicks_on_Sign_in_link() throws Throwable {
+    	waitAndDoActionXpath(UIMapper.getValue("signInYahoo"));
+    }
 }  

@@ -80,11 +80,45 @@ And user enters the pin code
 Examples: 
 	| Testcase Name |
 	| TC1           |
+	
+@YahooApproval
+Scenario Outline: yahoo mail approval
+And go to yahoo mail
+When user enters username of "YahooRequester" in yahoo page
+And clicks on next button
+And also enters password of "YahooRequester" in yahoo page
+And clicks on next button 
+When User clicks on compose button to compose mail
+And fills the required field "<Testcase Name>"
+And clicks on send button
+And User logs out from the account
+
+Examples: 
+	| Users     | Testcase Name | Level |
+	| Requester | TC4           | WK5   |
+
+@YahooApproval1
+Scenario Outline: yahoo mail approval
+When Users implements the new workflow "<Workflow Name>"
+And go to yahoo mail 
+And Loggins with the users to yahoo
+And Loggins with the users to yahoo
+And Loggins with the users to yahoo
+#When user enters username of user in yahoo page
+#And clicks on next button
+#And also enters password of user in yahoo page
+#And clicks on next button 
+#And User logs out from the account
+#When User clicks on Sign in link 
+#When user enters username of user in yahoo page
+
+Examples: 
+	| Users     | Testcase Name | Workflow Name |
+	| Requester | TC4           | WK5   |
 			
 @Gmailapproval 
 Scenario Outline: 2 level of approval 
 Given Read the Workflow Levels"<Level>" 
-Given User opens the browser 
 And go to gmail login page 
 When User Enters Username and password of "Requester" 
 And clicks on sign in button 

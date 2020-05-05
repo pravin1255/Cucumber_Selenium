@@ -1,13 +1,13 @@
 package com.policy.Utility;
 
-import static com.policy.Utility.Constant.driver;
-
 import java.awt.AWTException;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,12 +20,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.junit.Assert;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -43,30 +44,38 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.internal.ExitCode;
 
 import com.cucumber.listener.Reporter;
 //import com.cucumber.listener.Reporter;
 import com.google.common.base.Function;
+import com.policy.cucumberTest.ChromeDriverEx;
+
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
+import static com.policy.Utility.javascriptMethods.highlight;
 
 //This is the normal methods
-public class Normal_Methods 
+public class Normal_Methods extends BaseFactoryClass 
 {
 	LinkedHashMap<String, LinkedHashMap<String,String>> outerMap;
 	LinkedHashMap<String,String> innerMap;
 	LinkedHashMap<String,String> tempMap;
 	int rowCount;
 	int colCount;
+	public static String dest;
+	public static Robot re;
+	public static Alert al;
 	
 	HSSFSheet sheet;
 	
 	public int count;
 	private String backgroundProperty;
+	JavascriptExecutor jsExecutor=getJavascriptExecutor();
+	static ChromeDriverEx driver=getChromeDriver();
 	
-	public void highlight(WebElement element)
-	{
-		JavascriptExecutor js=(JavascriptExecutor)driver;
-		js.executeScript("arguments[0].setAttribute('style','border:2px solid red');", element);
-	}
 	
 	public void waitUntilVisible(WebElement element){
 		FluentWait<WebDriver> fWait = new FluentWait<WebDriver>(driver)
@@ -74,21 +83,9 @@ public class Normal_Methods
 				.pollingEvery(5, TimeUnit.SECONDS)
 				.ignoring(NoSuchElementException.class)
 				.ignoring(Exception.class);
-//		WebElement clicableElement = fWait.until(new Predicate<WebElement>(){
-//		public boolean test(WebElement element){
-//		return element.isDisplayed() && element.isEnabled();
-//		}
-
-		
-
-		
-//		});
-//		clicableElement.click();
 	}
 	
-	
-	
-	public void waitAndDoActionXpath(String xpathName) {
+	public void waitAndDoActionXpath(final String xpathName) {
 		count = 1;
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
 				.withTimeout(Constant.wait, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
@@ -144,7 +141,7 @@ public class Normal_Methods
 		}
 	}
 	
-	public void waitToVisible(String xpathName) {
+	public void waitToVisible(final String xpathName) {
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
@@ -188,7 +185,7 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(xpathName)));
 	}
 	
-	public void waitAndType(String xpathName,String value) {
+	public void waitAndType(final String xpathName,String value) {
 		count = 1;
 
 		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver).pollingEvery(1, TimeUnit.SECONDS)
@@ -496,7 +493,7 @@ public class Normal_Methods
 		System.out.println("After waiting for CSS");
 	}
 	
-	public void waitAndDoActionCss(String cssName)
+	public void waitAndDoActionCss(final String cssName)
 	{
 		count=1;
 		
@@ -537,7 +534,7 @@ public class Normal_Methods
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssName))).click();
 	}
 	
-	public void waitToVisibleCss(String cssName)
+	public void waitToVisibleCss(final String cssName)
 	{
 		count=1;
 		
@@ -632,7 +629,7 @@ public class Normal_Methods
 	
 	public void assertionCheck(String userInput, String uiText)
 	{
-		Assert.assertTrue(userInput+" is not matched with "+uiText, userInput.contains(uiText));
+		//Assert.assertTrue(userInput+" is not matched with "+uiText, userInput.contains(uiText));
 		
 		System.out.println("ASSERTION PASSED");
 	}
@@ -709,7 +706,7 @@ public class Normal_Methods
 		FluentWait<WebDriver> wait = configureWait();
 		element = wait.until(ExpectedConditions.visibilityOf(element));
 		if(element.isEnabled()) {
-			element.clear();
+			//element.clear();
 			element.sendKeys(message);
 		}
 	}
@@ -730,13 +727,21 @@ public class Normal_Methods
 	public void selectDropDownList(String xpathName, String text){
 		List<WebElement> list=driver.findElements(By.xpath(xpathName));
 		System.out.println("The size of the list is "+list.size());
-		for(WebElement ele:list){
-			if(ele.getText().equals(text)){
-				System.out.println("The Text is "+text);
-				ele.click();
-				break;
-			}				
-		}
+		list.forEach(action->{
+			if(action.getText().equals(text)) {
+				System.out.println("The text is: "+text);
+				action.click();
+				return;
+			}
+		});
+		
+//		for(WebElement ele:list){
+//			if(ele.getText().equals(text)){
+//				System.out.println("The Text is "+text);
+//				ele.click();
+//				break;
+//			}				
+//		}
 	}
 	
 	public void selectCheckBox(String value){
@@ -839,5 +844,208 @@ public class Normal_Methods
 				}
 			}
 		});
+	}
+	
+	public static void saveFullPageScreenshot(String name) throws IOException {
+		Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000))
+				.takeScreenshot(driver);
+		ImageIO.write(screenshot.getImage(), "PNG", new File(name));
+
+	}
+	
+	public static String takeFullpageScreenshot() {
+		Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000))
+				.takeScreenshot(driver);
+		try {
+			ImageIO.write(screenshot.getImage(), "PNG",
+					new File(System.getProperty("user.dir") + "/src/test/resources/screenshots/"));
+		} catch (IOException e) { // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return dest;
+	}
+	
+	/* To Capture Screenshot(Replaces if already exists) */
+	/*
+	 * Also, Make sure that the automation in running in the foreground to capture
+	 * the Image of the Browser. Else, It'll capture the open Window
+	 */
+	public void robotScreenCapture(String robotImageName) throws Exception {
+		re = new Robot();
+		Rectangle area = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+		BufferedImage bufferedImage = re.createScreenCapture(area);
+		// Save as PNG
+		File file = new File(robotImageName);
+		if (file.exists()) {
+			file.delete();
+		}
+		ImageIO.write(bufferedImage, "png", file);
+	}
+
+	/* To ZoomOut */
+	public void robotZoomOut() throws Exception {
+		re = new Robot();
+		re.keyPress(KeyEvent.VK_CONTROL);
+		re.keyPress(KeyEvent.VK_SUBTRACT);
+		re.keyRelease(KeyEvent.VK_SUBTRACT);
+		re.keyRelease(KeyEvent.VK_CONTROL);
+	}
+
+	/* To ZoomIn */
+	public void robotZoomIn() throws Exception {
+		re = new Robot();
+		re.keyPress(KeyEvent.VK_CONTROL);
+		re.keyPress(KeyEvent.VK_ADD);
+		re.keyRelease(KeyEvent.VK_ADD);
+		re.keyRelease(KeyEvent.VK_CONTROL);
+	}
+
+	/* To ScrollUp using ROBOT */
+	public void robotScrollUp() throws Exception {
+		re = new Robot();
+		re.keyPress(KeyEvent.VK_PAGE_UP);
+		re.keyRelease(KeyEvent.VK_PAGE_UP);
+	}
+	
+	/* To ScrollDown using ROBOT */
+	public void robotScrollDown() throws Exception {
+		re = new Robot();
+		re.keyPress(KeyEvent.VK_PAGE_DOWN);
+		re.keyRelease(KeyEvent.VK_PAGE_DOWN);
+	}
+
+	/* To ScrollUp using JavaScript Executor */
+	public void scrollUp() throws Exception {
+		((JavascriptExecutor) driver).executeScript("scroll(0, -100);");
+	}
+
+	/* To ScrollDown using JavaScript Executor */
+	public void scrollDown() throws Exception {
+		((JavascriptExecutor) driver).executeScript("scroll(0, 100);");
+	}
+
+	/* To Move cursor to the Desired Location */
+	public void moveCursor(int X_Position, int Y_Position) throws Exception {
+		re.mouseMove(X_Position, Y_Position);
+	}
+
+	/* To Accept the Alert Dialog Message */
+	public void alertAccept() throws Exception {
+		al = driver.switchTo().alert();
+		al.accept();
+	}
+
+	/* To Dismiss the Alert Dialog Message */
+	public void alertDismiss() throws Exception {
+		al = driver.switchTo().alert();
+		al.dismiss();
+	}
+	
+	/* To Get Tooltip Text */
+	public String getTooltipText(WebElement element) {
+		String tooltipText = element.getAttribute("title").trim();
+		return tooltipText;
+	}
+	
+	/*
+	 * Scroll to the Bottom of the Page
+	 */
+	public void scrollToPageBottom() {
+
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+	}
+	
+	public static void waitForPageLoaded() {
+		ExpectedCondition<Boolean> expectationLoad = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((JavascriptExecutor) driver).executeScript("return document.readyState").toString()
+						.equals("complete");
+			}
+		};
+		try {
+			Thread.sleep(2000);
+			WebDriverWait waitForLoad = new WebDriverWait(driver, 33);
+			waitForLoad.until(expectationLoad);
+		} catch (Throwable error) {
+			Assert.fail("Timeout waiting for Page Load Request to complete.");
+		}
+	}
+
+	public static void waitForAjaxFinished() {
+		ExpectedCondition<Boolean> expectationAjax = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((Boolean) ((JavascriptExecutor) driver).executeScript("return jQuery.active == 0"));
+			}
+		};
+		try {
+			Thread.sleep(2000);
+			WebDriverWait waitForAjax = new WebDriverWait(driver, 33);
+			waitForAjax.until(expectationAjax);
+		} catch (Throwable error) {
+			Assert.fail("Timeout waiting for Ajax Finished to complete.");
+		}
+	}
+	
+	public boolean isDisplayed(WebElement element) {
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		boolean status = false;
+		int attempts = 0;
+		while (attempts < 2) {
+			try {
+				status = element.isDisplayed();
+				break;
+			} catch (StaleElementReferenceException e) {
+			} catch (NoSuchElementException e) {
+			}catch (Exception e) {
+				}
+			attempts++;
+		}
+		return status;
+	}
+	
+	public boolean isDisplayed(String xpathName) {
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		boolean status = false;
+		int attempts = 0;
+		while (attempts < 2) {
+			try {
+				status=driver.findElement(By.xpath(xpathName)).isDisplayed();
+				break;
+			} catch (StaleElementReferenceException e) {
+			} catch (NoSuchElementException e) {
+			}catch (Exception e) {
+				}
+			attempts++;
+		}
+		return status;
+	}
+	
+	private static ExpectedCondition<Boolean> textDisplayed2(final By elementFindBy, final String text) {
+		return input -> input.findElement(elementFindBy).getText().contains(text);
+	}
+	
+	public ExpectedCondition<Boolean> untilVisible(String xpath){
+		System.out.println("Xpath: "+xpath);
+		return input->input.findElement(By.xpath(xpath)).isDisplayed() ;
+	}	
+	
+	private static ExpectedCondition<Boolean> textDisplayed(final By elementFindBy, final String text){
+		return new ExpectedCondition<Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver input) {
+				return input.findElement(elementFindBy).getText().contains(text);
+			}
+		};
+			
 	}
 }
