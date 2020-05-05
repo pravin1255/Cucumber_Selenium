@@ -935,14 +935,24 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		readDataFromExcel("User2");
 		String profileName=accessTestData(groupName, "ProfileName");
 		boolean flag=isDisplayed(UIMapper.getValue("profileNameY"));
-		if (flag) {
-			String profileNameWeb = getTextFromUI(UIMapper.getValue("profileNameY"));
+		if (flag) {			
+			String profileNameWeb = getTextFromUI(UIMapper.getValue("profileNameY"), UIMapper.getValue("profileNameY2"));
 			if (!profileName.equalsIgnoreCase(profileNameWeb)) {
 				waitAndDoActionXpath(UIMapper.getValue("profile"));
 				waitAndDoActionXpath(UIMapper.getValue("signOutyahoo"));
 				loginYahoo(groupName);
 			}
-		} else {
+		} else if(isDisplayed(UIMapper.getValue("profileNameY2"))){
+			String profileNameWeb = getTextFromUI(UIMapper.getValue("profileNameY"), UIMapper.getValue("profileNameY2"));
+			if (!profileName.equalsIgnoreCase(profileNameWeb)) {
+				waitAndDoActionXpath(UIMapper.getValue("profileNameY2"));
+				jsClick(UIMapper.getValue("signOutyahoo"));				
+				boolean isView=isDisplayed(UIMapper.getValue("addAccount"));
+				if(isView)
+					jsclick(UIMapper.getValue("addAccount"));
+				loginYahoo(groupName);
+			}
+		}else {
 			loginYahoo(groupName);
 		}				
 	}
@@ -951,8 +961,19 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 	 * This is the login function for yahoo
 	 */
 	public void loginYahoo(String groupName) throws IOException {
+		
+		try {
+			boolean flag=isDisplayed(UIMapper.getValue("signMeOut"));
+			if(flag)
+				jsClick(UIMapper.getValue("signMeOut"));
+		}
+		catch(Exception e) {			
+		}
 		untilVisible(UIMapper.getValue("SignIn"));
 		waitAndDoActionXpath(UIMapper.getValue("SignIn"));
+		boolean isView=isDisplayed(UIMapper.getValue("addAccount"));
+		if(isView)
+			jsclick(UIMapper.getValue("addAccount"));		
 		waitAndType(UIMapper.getValue("usernameYah"), accessTestData(groupName, "Username"));
 		jsClick(UIMapper.getValue("nextBTN"));
 		waitAndType(UIMapper.getValue("Password"), accessTestData(groupName, "Password"));

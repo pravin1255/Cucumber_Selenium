@@ -771,6 +771,24 @@ public class Normal_Methods extends BaseFactoryClass
 		return text;
 	}
 	
+	public String getTextFromUI(String... xpath){
+		boolean flag1=isDisplayed(xpath[0]);
+		boolean flag2=isDisplayed(xpath[1]);
+		if(flag1) {
+			String text=driver.findElement(By.xpath(xpath[0])).getText();
+			System.out.println("The Text from UI is "+text);
+			return text;	
+		}
+		else if (flag2==true){
+			{
+				String text=driver.findElement(By.xpath(xpath[1])).getText();
+				System.out.println("The Text from UI is "+text);
+				return text;	
+			}
+		}
+		return null;
+	}
+	
 	public static int getDifference(int i, int j) {
 		System.out.println("The difference is "+(i-j));
 		return i-j;
