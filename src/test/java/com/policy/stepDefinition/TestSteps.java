@@ -925,7 +925,7 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		flow=groupName+"(DONE)"+flow.replaceAll(groupName, "");
 		System.out.println(flow);
 		try {
-			yahooLogin(groupName);
+			//yahooLogin(groupName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -980,7 +980,21 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		jsClick(UIMapper.getValue("nextBTN"));
 	}
 	
-
+	@And("^Loggins with the users to yahoo using other method$")
+    public void loggins_with_the_users_to_yahoo_using_other_method() throws Throwable {
+		
+		if(flow.length()>0) {
+			String groupName=flow.split("[$]")[0];		
+			System.out.println("GroupName 1"+groupName);
+			flow=flow.replaceAll(groupName+"[$]", "");
+			//flow=flow.substring(1);
+			System.out.println(flow);
+		}else {
+			System.out.println("NO USER TO LOGIN");
+			return;
+		}		
+    }
+	
 	void gmailLogin(String groupName) throws Exception
 	{
 		HashMap<String,String> getUserInfor=getUserData();

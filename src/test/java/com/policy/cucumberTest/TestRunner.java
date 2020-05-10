@@ -27,7 +27,7 @@ import cucumber.api.CucumberOptions;
 		format={"com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html", "pretty"},
 		monochrome=true,
 		tags = { "~@Policy,~@AddPolicy", "~@GetPolicyDetails", "~@changePolicyAmt", "~@RegressionTest", "~@BuyNow",
-				"~@Gmailapproval", "~@BuyNow", "~@FileUpload", "~@YahooApproval","@YahooApproval1","~@FileDownload3Users" }
+				"~@Gmailapproval", "~@BuyNow", "~@FileUpload", "~@YahooApproval","@YahooApproval2","~@FileDownload3Users" }
 		)
 public class TestRunner {	
 	

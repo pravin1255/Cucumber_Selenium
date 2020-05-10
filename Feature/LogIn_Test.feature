@@ -115,6 +115,19 @@ And Loggins with the users to yahoo
 Examples: 
 	| Users     | Testcase Name | Workflow Name |
 	| Requester | TC4           | WK5   |
+	
+@YahooApproval2
+Scenario Outline: yahoo mail approval
+When Users implements the new workflow "<Workflow Name>"
+And go to yahoo mail 
+And Loggins with the users to yahoo using other method
+And Loggins with the users to yahoo using other method
+And Loggins with the users to yahoo using other method
+And Loggins with the users to yahoo using other method
+
+Examples: 
+	| Users     | Testcase Name | Workflow Name |
+	| Requester | TC4           | WK5   |
 			
 @Gmailapproval 
 Scenario Outline: 2 level of approval 
