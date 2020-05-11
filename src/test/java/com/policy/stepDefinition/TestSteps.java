@@ -41,6 +41,9 @@ import com.policy.Utility.Constant;
 import com.policy.Utility.Normal_Methods;
 import com.policy.Utility.UIMapper;
 import com.policy.cucumberTest.ChromeDriverEx;
+
+import ch.lambdaj.group.Group;
+
 import com.cucumber.listener.Reporter;
 import static com.policy.Utility.javascriptMethods.highlight;
 import static com.policy.Utility.javascriptMethods.jsClick;
@@ -980,19 +983,24 @@ List<WebElement> element=driver.findElements(By.xpath("//*[@class='TLVGit']"));
 		jsClick(UIMapper.getValue("nextBTN"));
 	}
 	
+	/*
+	 * This is another method for login in here we are using do while loop
+	 * where i is declared outside the method.
+	 * If i is declared inside the method then the user will login with 1st user only as
+	 * i value will always be 0
+	 */
+	int i=0;
 	@And("^Loggins with the users to yahoo using other method$")
     public void loggins_with_the_users_to_yahoo_using_other_method() throws Throwable {
 		
-		if(flow.length()>0) {
-			String groupName=flow.split("[$]")[0];		
-			System.out.println("GroupName 1"+groupName);
-			flow=flow.replaceAll(groupName+"[$]", "");
-			//flow=flow.substring(1);
-			System.out.println(flow);
-		}else {
-			System.out.println("NO USER TO LOGIN");
-			return;
-		}		
+		String[] flowArray=flow.split("[$]");
+		System.out.println(Arrays.toString(flowArray));
+		do {
+			String groupName=flowArray[i];
+			System.out.println("GroupName: "+groupName);
+			yahooLogin(groupName);
+		}while(i>flowArray.length);
+		i++;
     }
 	
 	void gmailLogin(String groupName) throws Exception

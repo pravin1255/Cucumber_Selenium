@@ -122,12 +122,10 @@ When Users implements the new workflow "<Workflow Name>"
 And go to yahoo mail 
 And Loggins with the users to yahoo using other method
 And Loggins with the users to yahoo using other method
-And Loggins with the users to yahoo using other method
-And Loggins with the users to yahoo using other method
 
 Examples: 
 	| Users     | Testcase Name | Workflow Name |
-	| Requester | TC4           | WK5   |
+	| Requester | TC4           | WK6   |
 			
 @Gmailapproval 
 Scenario Outline: 2 level of approval 
