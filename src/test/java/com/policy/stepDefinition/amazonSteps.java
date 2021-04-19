@@ -8,8 +8,8 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-import static com.policy.Utility.Constant.driver;
-
+//import static com.policy.Utility.Constant.driver;
+import static com.policy.Utility.BaseFactoryClass.driver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -33,7 +33,7 @@ public class amazonSteps extends Normal_Methods{
 		String testcaseName=arg1;
 		
 		readDataFromExcel("Amazon");
-		
+	
 		driver.manage().window().maximize();
 		driver.get(accessTestData(testcaseName, "URL"));	
 		
@@ -255,7 +255,8 @@ public class amazonSteps extends Normal_Methods{
 	
 	@Given("^user moves to Wishlist page$")
 	public void user_moves_to_Wishlist_page() throws Throwable {
-
+		Thread.sleep(2000);
+		mouseHover("//*[contains(@href,'www.amazon.in/gp/css/homepage')]");
 		mouseHover(UIMapper.getValue("orderA"), UIMapper.getValue("wishListA"));
 		capture=Normal_Methods.capture(driver, "WishList Page");
 		Reporter.addScreenCaptureFromPath(capture, "Wish List");
@@ -348,7 +349,7 @@ public class amazonSteps extends Normal_Methods{
 	@When("^user selects the size \"(.*?)\"$")
 	public void user_selects_the_size(String arg1) throws Throwable {
 	
-		dropDownSelectUsingSelect(UIMapper.getValue("sizeA"), accessTestData(arg1, "Size"));
+		dropDownSelectUsingSelect("//*[@name='dropdown_selected_size_name']", accessTestData(arg1, "Size"));
 		capture=Normal_Methods.capture(driver, "Size image");
 		Reporter.addScreenCaptureFromPath(capture, "Size image pages");
 		Reporter.addStepLog("<font style=\"color:white;background-color:rgb(251, 100, 27);\">User selects the size "+accessTestData(arg1, "Size")+"</font>");

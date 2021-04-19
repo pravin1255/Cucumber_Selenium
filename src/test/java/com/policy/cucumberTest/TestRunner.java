@@ -22,12 +22,12 @@ import cucumber.api.CucumberOptions;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		features="Feature/LogIn_Test.feature",
+		features="Feature/AmazonTest.feature",
 		glue={"com.policy.stepDefinition"},
 		format={"com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/report.html", "pretty"},
 		monochrome=true,
-		tags = { "~@Policy,~@AddPolicy", "~@GetPolicyDetails", "~@changePolicyAmt", "~@RegressionTest", "~@BuyNow",
-				"~@Gmailapproval", "~@BuyNow", "~@FileUpload", "~@YahooApproval","@YahooApproval2","~@FileDownload3Users" }
+		tags = { "~@Policy,~@AddPolicy", "~@GetPolicyDetails", "~@changePolicyAmt", "~@RegressionTest",
+				"~@Gmailapproval", "@BuyNow", "~@FileUpload", "~@YahooApproval","~@YahooApproval2","~@FileDownload3Users" }
 		)
 public class TestRunner {	
 	

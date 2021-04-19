@@ -606,14 +606,17 @@ public class Normal_Methods extends BaseFactoryClass
 	}
 	
 	//Used for mouse hover on an element and click on the child element which is displayed when we do mouse hover	
-	public void mouseHover(String parentxpath, String childxpath)
+	public void mouseHover(String... xpath)
 	{
 		Actions act = new Actions(driver);
 	    WebDriverWait wait = new WebDriverWait(driver, 10);
-	    WebElement parent = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(parentxpath)));
+	    //WebElement parent = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(parentxpath)));
+	    WebElement parent = driver.findElement(By.xpath(xpath[0]));
 	    act.moveToElement(parent).perform();
-	    WebElement child = driver.findElement(By.xpath(childxpath));
-	    child.click();
+	    if(xpath.length>1) {
+	    	WebElement child = driver.findElement(By.xpath(xpath[1]));
+		    child.click();
+	    }
 	}
 	
 	//Used for mouse hover on an element and click on the child element which is displayed when we do mouse hover	
@@ -630,7 +633,7 @@ public class Normal_Methods extends BaseFactoryClass
 	public void assertionCheck(String userInput, String uiText)
 	{
 		//Assert.assertTrue(userInput+" is not matched with "+uiText, userInput.contains(uiText));
-		
+		Assert.assertTrue(userInput.contains(uiText), userInput+" is not matched with "+uiText);		
 		System.out.println("ASSERTION PASSED");
 	}
 	

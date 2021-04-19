@@ -18,7 +18,7 @@ import static com.policy.Utility.Constant.driver;
  */
 public class BaseFactoryClass {
 	static JavascriptExecutor javascriptExecutor;
-	static ChromeDriverEx driver;
+	public static ChromeDriverEx driver;
 	
 	public static JavascriptExecutor getJavascriptExecutor(){
 		if(javascriptExecutor==null) {
